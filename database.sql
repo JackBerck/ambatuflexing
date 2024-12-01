@@ -3,9 +3,11 @@ CREATE DATABASE php_login_management;
 CREATE DATABASE php_login_management_test;
 
 CREATE TABLE users(
-    id VARCHAR(255) PRIMARY KEY ,
-    name VARCHAR(255) NOT NULL ,
-    password VARCHAR(255) NOT NULL
+    id VARCHAR(255) PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    full_name VARCHAR(255) NOT NULL ,
+    password VARCHAR(255) NOT NULL,
+    photo VARCHAR(255) NULL
 ) ENGINE InnoDB;
 
 CREATE TABLE sessions(

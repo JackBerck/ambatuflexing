@@ -16,21 +16,24 @@ class UserRepository
 
     public function save(User $user): User
     {
-        $statement = $this->connection->prepare("INSERT INTO users(full_name,email, password) VALUES (?, ?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO users(username,email, password) VALUES (?, ?, ?)");
         $statement->execute([
-            $user->fullName,
+            $user->username,
             $user->email,
             $user->password
         ]);
+        $user->id = $this->connection->lastInsertId();
         return $user;
     }
 
     public function update(User $user): User
     {
-        $statement = $this->connection->prepare("UPDATE users SET full_name = ?, password = ?, photo = ? WHERE id = ?");
+        $statement = $this->connection->prepare("UPDATE users SET username = ?, password = ?,position = ?,bio = ?, photo = ?  WHERE id = ?");
         $statement->execute([
-            $user->fullName,
+            $user->username,
             $user->password,
+            $user->position,
+            $user->bio,
             $user->photo,
             $user->id
         ]);
@@ -44,17 +47,22 @@ class UserRepository
             throw new ValidationException('field must be one of "id", "email"');
         }
 
-        $statement = $this->connection->prepare("SELECT id, full_name,email, password, photo FROM users WHERE $field = ?");
+        $statement = $this->connection->prepare("SELECT id, email,username, password,position, bio ,photo,is_admin,created_at FROM users WHERE $field = ?");
         $statement->execute([$value]);
 
         try {
             if ($row = $statement->fetch()) {
                 $user = new User();
                 $user->id = $row['id'];
-                $user->fullName = $row['full_name'];
                 $user->email = $row['email'];
+                $user->username = $row['username'];
                 $user->password = $row['password'];
+                $user->position = $row['position'];
+                $user->bio = $row['bio'];
                 $user->photo = $row['photo'];
+                $user->isAdmin = $row['is_admin'];
+                $user->createdAt = $row['created_at'];
+
                 return $user;
             } else {
                 return null;

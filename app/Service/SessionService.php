@@ -10,7 +10,7 @@ use JackBerck\Ambatuflexing\Repository\UserRepository;
 class SessionService
 {
 
-    public static string $COOKIE_NAME = "X-PZN-SESSION";
+    public static string $COOKIE_NAME = "X-DEVFLEX-SESSION";
 
     private SessionRepository $sessionRepository;
     private UserRepository $userRepository;
@@ -34,7 +34,7 @@ class SessionService
         return $session;
     }
 
-    public function destroy()
+    public function destroy(): void
     {
         $sessionId = $_COOKIE[self::$COOKIE_NAME] ?? '';
         $this->sessionRepository->deleteById($sessionId);
@@ -51,6 +51,6 @@ class SessionService
             return null;
         }
 
-        return $this->userRepository->findById($session->userId);
+        return $this->userRepository->findByField('id', $session->userId);
     }
 }

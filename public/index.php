@@ -11,18 +11,44 @@ use JackBerck\Ambatuflexing\Middleware\MustLoginMiddleware;
 
 Database::getConnection('prod');
 
-// Home Controller
-Router::add('GET', '/', HomeController::class, 'index', []);
+// Home
+Router::add("GET", "/", HomeController::class, "index");
+Router::add("GET", "/about", HomeController::class, "function");
+Router::add("GET", "/post/([0-9]*)", HomeController::class, "function");
+Router::add("GET", "/upload", HomeController::class, "function");
+Router::add("POST", "/upload", HomeController::class, "function");
+Router::add("GET", "/search", HomeController::class, "function");
 
-// User Controller
-Router::add('GET', '/users/register', UserController::class, 'register', [MustNotLoginMiddleware::class]);
-Router::add('POST', '/users/register', UserController::class, 'postRegister', [MustNotLoginMiddleware::class]);
-Router::add('GET', '/users/login', UserController::class, 'login', [MustNotLoginMiddleware::class]);
-Router::add('POST', '/users/login', UserController::class, 'postLogin', [MustNotLoginMiddleware::class]);
-Router::add('GET', '/users/logout', UserController::class, 'logout', [MustLoginMiddleware::class]);
-Router::add('GET', '/users/profile', UserController::class, 'updateProfile', [MustLoginMiddleware::class]);
-Router::add('POST', '/users/profile', UserController::class, 'postUpdateProfile', [MustLoginMiddleware::class]);
-Router::add('GET', '/users/password', UserController::class, 'updatePassword', [MustLoginMiddleware::class]);
-Router::add('POST', '/users/password', UserController::class, 'postUpdatePassword', [MustLoginMiddleware::class]);
+//auth
+Router::add("GET", "/login", UserController::class, "login");
+Router::add("POST", "/login", UserController::class, "postLogin");
+Router::add("GET", "/register", UserController::class, "register");
+Router::add("POST", "/register", UserController::class, "postRegister");
+Router::add("GET", "/logout", UserController::class, "logout");
+
+// User
+Router::add("GET", "/user/dashboard", UserController::class, "dashboard");
+Router::add("PUT", "/user/dashboard", UserController::class, "putUpdateProfile");
+Router::add("PATCH", "/user/dashboard", UserController::class, "patchUpdatePassword");
+Router::add("GET", "/user/dashboard/liked-posts", UserController::class, "likedPosts");
+Router::add("DELETE", "/user/dashboard/liked-posts", UserController::class, "function");
+Router::add("GET", "/user/dashboard/manage-posts", UserController::class, "function");
+Router::add("DELETE", "/user/dashboard/manage-posts", UserController::class, "function");
+Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "function");
+Router::add("PUT", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "function");
+
+// Admin
+Router::add("GET", "/admin/dashboard", HomeController::class, "function");
+Router::add("PUT", "/admin/dashboard", HomeController::class, "function");
+Router::add("PATCH", "/admin/dashboard", HomeController::class, "function");
+Router::add("GET", "/admin/dashboard/liked-posts", HomeController::class, "function");
+Router::add("DELETE", "/admin/dashboard/liked-posts", HomeController::class, "function");
+Router::add("GET", "/admin/dashboard/manage-posts", HomeController::class, "function");
+Router::add("DELETE", "/admin/dashboard/manage-posts", HomeController::class, "function");
+Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", HomeController::class, "function");
+Router::add("PUT", "/admin/dashboard/manage-posts/([0-9]*)", HomeController::class, "function");
+Router::add("GET", "/admin/dashboard/manage-users", HomeController::class, "function");
+Router::add("GET", "/admin/dashboard/manage-users/([0-9]*)", HomeController::class, "function");
+Router::add("PUT", "/admin/dashboard/manage-users/([0-9]*)", HomeController::class, "function");
 
 Router::run();

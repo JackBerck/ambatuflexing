@@ -29,42 +29,39 @@ class UserController
         $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
-    public function register()
+    public function register(): void
     {
         View::render('User/register', [
-            'title' => 'Register new User'
+            'title' => 'Register',
         ]);
     }
 
-    public function postRegister()
+    public function postRegister(): void
     {
         $request = new UserRegisterRequest();
-        $request->id = $_POST['id'];
-        $request->name = $_POST['name'];
+        $request->email = $_POST['email'];
+        $request->username = $_POST['username'];
         $request->password = $_POST['password'];
 
         try {
             $this->userService->register($request);
-            View::redirect('/users/login');
+            View::redirect('/login');
         } catch (ValidationException $exception) {
-            View::render('User/register', [
-                'title' => 'Register new User',
-                'error' => $exception->getMessage()
-            ]);
+            View::redirect('/register');
         }
     }
 
-    public function login()
+    public function login(): void
     {
         View::render('User/login', [
-            "title" => "Login user"
+            "title" => "Login"
         ]);
     }
 
-    public function postLogin()
+    public function postLogin(): void
     {
         $request = new UserLoginRequest();
-        $request->id = $_POST['id'];
+        $request->email = $_POST['email'];
         $request->password = $_POST['password'];
 
         try {
@@ -72,85 +69,80 @@ class UserController
             $this->sessionService->create($response->user->id);
             View::redirect('/');
         } catch (ValidationException $exception) {
-            View::render('User/login', [
-                'title' => 'Login user',
-                'error' => $exception->getMessage()
-            ]);
+            View::redirect('/login');
         }
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->sessionService->destroy();
         View::redirect("/");
     }
 
-    public function updateProfile()
+    public function dashboard(): void
     {
         $user = $this->sessionService->current();
 
-        View::render('User/profile', [
-            "title" => "Update user profile",
-            "user" => [
-                "id" => $user->id,
-                "name" => $user->name
-            ]
+        View::render('User/dashboard', [
+            "title" => "Dashboard",
+            "user" => (array)$user
         ]);
     }
 
-    public function postUpdateProfile()
+    public function putUpdateProfile(): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard' : '/admin/dashboard';
+
+        // Mengambil data dari PUT request
+        parse_str(file_get_contents("php://input"), $_PUT);
 
         $request = new UserProfileUpdateRequest();
         $request->id = $user->id;
-        $request->name = $_POST['name'];
+        $request->username = $_PUT['username'] ?? null;
+        $request->position = $_PUT['position'] ?? null;
+        $request->bio = $_PUT['bio'] ?? null;
+        $request->photo = $_FILES['profile']['tmp_name'] != "" ? $_FILES['profile'] : null;
 
         try {
             $this->userService->updateProfile($request);
-            View::redirect('/');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::render('User/profile', [
-                "title" => "Update user profile",
-                "error" => $exception->getMessage(),
-                "user" => [
-                    "id" => $user->id,
-                    "name" => $_POST['name']
-                ]
-            ]);
+            View::redirect($redirect);
         }
     }
 
-    public function updatePassword()
+    public function patchUpdatePassword(): void
     {
         $user = $this->sessionService->current();
-        View::render('User/password', [
-            "title" => "Update user password",
-            "user" => [
-                "id" => $user->id
-            ]
-        ]);
-    }
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard' : '/admin/dashboard';
 
-    public function postUpdatePassword()
-    {
-        $user = $this->sessionService->current();
+        parse_str(file_get_contents("php://input"), $_PATCH);
+
         $request = new UserPasswordUpdateRequest();
         $request->id = $user->id;
-        $request->oldPassword = $_POST['oldPassword'];
-        $request->newPassword = $_POST['newPassword'];
+        $request->oldPassword = $_PATCH['oldPassword'];
+        $request->newPassword = $_PATCH['newPassword'];
 
         try {
             $this->userService->updatePassword($request);
-            View::redirect('/');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::render('User/password', [
-                "title" => "Update user password",
-                "error" => $exception->getMessage(),
-                "user" => [
-                    "id" => $user->id
-                ]
-            ]);
+            View::redirect($redirect);
         }
+    }
+
+    public function likedPosts()
+    {
+        $user = $this->sessionService->current();
+
+        // get liked post
+
+        $model = [
+            'title' => 'Liked Posts',
+            'user' => (array)$user
+        ];
+
+        View::render('User/likedPosts', $model);
     }
 }

@@ -30,14 +30,14 @@ class UserService
 
         try {
             Database::beginTransaction();
-            $user = $this->userRepository->findById($request->id);
+            $user = $this->userRepository->findByField('email', $request->email);
             if ($user != null) {
                 throw new ValidationException("User Id already exists");
             }
 
             $user = new User();
-            $user->id = $request->id;
-            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->fullName = $request->fullName;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
 
             $this->userRepository->save($user);
@@ -56,8 +56,8 @@ class UserService
     private function validateUserRegistrationRequest(UserRegisterRequest $request)
     {
         if (
-            $request->id == null || $request->name == null || $request->password == null ||
-            trim($request->id) == "" || trim($request->name) == "" || trim($request->password) == ""
+            $request->email == null || $request->fullName == null || $request->password == null ||
+            trim($request->email) == "" || trim($request->fullName) == "" || trim($request->password) == ""
         ) {
             throw new ValidationException("Id, Name, Password can not blank");
         }
@@ -67,7 +67,7 @@ class UserService
     {
         $this->validateUserLoginRequest($request);
 
-        $user = $this->userRepository->findById($request->id);
+        $user = $this->userRepository->findByField('email', $request->email);
         if ($user == null) {
             throw new ValidationException("Id or password is wrong");
         }
@@ -84,8 +84,8 @@ class UserService
     private function validateUserLoginRequest(UserLoginRequest $request)
     {
         if (
-            $request->id == null || $request->password == null ||
-            trim($request->id) == "" || trim($request->password) == ""
+            $request->email == null || $request->password == null ||
+            trim($request->email) == "" || trim($request->password) == ""
         ) {
             throw new ValidationException("Id, Password can not blank");
         }
@@ -94,16 +94,31 @@ class UserService
     public function updateProfile(UserProfileUpdateRequest $request): UserProfileUpdateResponse
     {
         $this->validateUserProfileUpdateRequest($request);
+        $pathFile = __DIR__ . "/../../public/images/profiles/";
 
         try {
             Database::beginTransaction();
 
-            $user = $this->userRepository->findById($request->id);
+            $user = $this->userRepository->findByField('id', $request->id);
             if ($user == null) {
                 throw new ValidationException("User is not found");
             }
 
-            $user->name = $request->name;
+            $user->fullName = $request->name;
+
+            if ($user->photo != null && $request->photo != null) {
+                unlink($pathFile . $user->photo);
+            }
+
+            if ($request->photo && isset($request->photo["tmp_name"])) {
+                $extension = pathinfo($request->photo["name"], PATHINFO_EXTENSION);
+                $photoName = uniqid() . "." . $extension;
+
+                move_uploaded_file($request->photo["tmp_name"], $pathFile . $photoName);
+
+                $user->photo = $photoName;
+            }
+
             $this->userRepository->update($user);
 
             Database::commitTransaction();
@@ -125,6 +140,24 @@ class UserService
         ) {
             throw new ValidationException("Id, Name can not blank");
         }
+
+        if (isset($request->photo)) {
+            if ($request->photo == null && $request->photo["tmp_name"] == "") {
+                throw new ValidationException ("image cannot be empty");
+            }
+
+            if ($request->photo["error"] != UPLOAD_ERR_OK) {
+                throw new ValidationException ("image error");
+            }
+
+            if (!in_array($request->photo["type"], ['image/jpeg', 'image/png', 'image/jpg'])) {
+                throw new ValidationException ("image type is not allowed");
+            }
+
+            if ($request->photo["size"] > 2 * 1024 * 1024) {
+                throw new ValidationException ("image size is too large");
+            }
+        }
     }
 
     public function updatePassword(UserPasswordUpdateRequest $request): UserPasswordUpdateResponse
@@ -134,7 +167,7 @@ class UserService
         try {
             Database::beginTransaction();
 
-            $user = $this->userRepository->findById($request->id);
+            $user = $this->userRepository->findByField('id',$request->id);
             if ($user == null) {
                 throw new ValidationException("User is not found");
             }

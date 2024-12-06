@@ -73,6 +73,9 @@ class HomeController
         try {
             $details = $this->postService->details($postId);
             $model['post'] = (array)$details->post;
+            $model['author'] = $details->author;
+            $model['authorPhoto'] = $details->authorPhoto;
+            $model['authorPosition'] = $details->authorPosition;
             $model['images'] = $details->images;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {

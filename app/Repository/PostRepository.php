@@ -41,9 +41,10 @@ class PostRepository
     public function details(int $postId): ?DetailsPost
     {
         $query = "
-    SELECT posts.*, post_images.image
+    SELECT posts.*, post_images.image, users.username ,users.photo, users.position
     FROM posts
     LEFT JOIN post_images ON posts.id = post_images.post_id
+    LEFT JOIN users ON posts.user_id = users.id
     WHERE posts.id = ?";
 
         $stmt = $this->connection->prepare($query);
@@ -76,6 +77,10 @@ class PostRepository
         $result = new DetailsPost();
         $result->post = $post;
         $result->images = $images;
+        $result->author = $data[0]['username'];
+        $result->authorPhoto = $data[0]['photo'];
+        $result->authorPosition = $data[0]['position'];
+
         return $result;
     }
 

@@ -3,6 +3,7 @@
 namespace JackBerck\Ambatuflexing\Repository;
 
 use JackBerck\Ambatuflexing\Domain\Post;
+use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 
@@ -36,35 +37,46 @@ class PostRepository
         $statement->execute([$post->id]);
     }
 
-    public function details(int $postId): ?array
+
+    public function details(int $postId): ?DetailsPost
     {
         $query = "
-        SELECT posts.*, post_images.image
-        FROM posts
-        LEFT JOIN post_images ON posts.id = post_images.post_id
-        WHERE posts.id = ?";
+    SELECT posts.*, post_images.image
+    FROM posts
+    LEFT JOIN post_images ON posts.id = post_images.post_id
+    WHERE posts.id = ?";
 
         $stmt = $this->connection->prepare($query);
         $stmt->execute([$postId]);
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $post = [
-            'id' => $data[0]['id'],
-            'title' => $data[0]['title'],
-            'content' => $data[0]['content'],
-            'category' => $data[0]['category'],
-            'created_at' => $data[0]['created_at'],
-            'updated_at' => $data[0]['updated_at'],
-            'user_id' => $data[0]['user_id'],
-            'images' => []
-        ];
+        // Jika tidak ada data yang ditemukan, return null
+        if (empty($data)) {
+            return null;
+        }
+
+        // Membuat objek Post
+        $post = new Post();
+        $post->id = $data[0]['id'];
+        $post->title = $data[0]['title'];
+        $post->content = $data[0]['content'];
+        $post->category = $data[0]['category'];
+        $post->createdAt = $data[0]['created_at'];
+        $post->updatedAt = $data[0]['updated_at'];
+        $post->authorId = $data[0]['user_id'];
+
+        // Memproses gambar-gambar yang terkait
+        $images = [];
         foreach ($data as $row) {
             if (!empty($row['image'])) {
-                $post['images'][] = $row['image'];
+                $images[] = $row['image'];
             }
         }
 
-        return $post;
+        $result = new DetailsPost();
+        $result->post = $post;
+        $result->images = $images;
+        return $result;
     }
 
     public function find(FindPostRequest $request): array

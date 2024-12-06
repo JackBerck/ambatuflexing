@@ -11,5 +11,8 @@ class FindPost
     public ?\string $createdAt = null;
     public ?\string $updatedAt = null;
     public ?\int $authorId = null;
+    public ?\string $author = null;
+    public ?\string $authorPosition = null;
+    public ?\string $authorPhoto = null;
     public ?\string $banner = null;
 }

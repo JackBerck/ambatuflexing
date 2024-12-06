@@ -84,12 +84,11 @@ class PostRepository
         return $result;
     }
 
-    public function find(FindPostRequest $request): array
+    public function find(FindPostRequest $request, int $limit = 20): array
     {
-        $limit = 20;
         $offset = ($request->page - 1) * $limit;
 
-        // Mempersiapkan query dasar untuk pengambilan data dan menghitung total
+        // Mempersiapkan query dasar untuk pengambilan data
         $query = "
         SELECT 
             p.id AS post_id, 
@@ -99,15 +98,16 @@ class PostRepository
             p.created_at AS post_created_at, 
             p.updated_at AS post_updated_at, 
             p.user_id AS post_user_id,
-            (
-                SELECT pi.image 
-                FROM post_images pi 
-                WHERE pi.post_id = p.id 
-                LIMIT 1
-            ) AS banner_image,
-            COUNT(*) OVER() as total_count
+            u.username AS post_author,
+            u.position AS post_author_position,
+            u.photo AS post_author_photo,
+            pi.image AS banner_image
         FROM 
             posts p
+        JOIN 
+            users u ON p.user_id = u.id 
+        LEFT JOIN 
+            post_images pi ON pi.post_id = p.id
         WHERE 1=1";
 
         // Mempersiapkan array untuk parameter
@@ -141,8 +141,37 @@ class PostRepository
         $stmt->execute();
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        // Query terpisah untuk mendapatkan total count
+        $countQuery = "
+        SELECT 
+            COUNT(*) as total_count
+        FROM 
+            posts p
+        JOIN 
+            users u ON p.user_id = u.id
+        WHERE 1=1";
+
+        // Gunakan kembali kondisi yang sama untuk konsistensi
+        if ($request->title) {
+            $countQuery .= " AND p.title LIKE :title";
+        }
+
+        if ($request->category) {
+            $countQuery .= " AND p.category = :category";
+        }
+
+        if ($request->userId) {
+            $countQuery .= " AND p.user_id = :user_id";
+        }
+
+        $countStmt = $this->connection->prepare($countQuery);
+        foreach ($params as $key => &$value) {
+            $countStmt->bindParam($key, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        $countStmt->execute();
+        $totalPosts = $countStmt->fetchColumn();
+
         $posts = [];
-        $totalPosts = 0;
         foreach ($results as $row) {
             $post = new FindPost();
             $post->id = $row['post_id'];
@@ -152,18 +181,16 @@ class PostRepository
             $post->createdAt = $row['post_created_at'];
             $post->updatedAt = $row['post_updated_at'];
             $post->authorId = $row['post_user_id'];
+            $post->author = $row['post_author'];
+            $post->authorPosition = $row['post_author_position'];
+            $post->authorPhoto = $row['post_author_photo'];
             $post->banner = $row['banner_image'];
-            $posts[] = (array)$post;
-
-            // Menentukan total jumlah postingan
-            if ($totalPosts == 0) {
-                $totalPosts = $row['total_count'];
-            }
+            $posts[] = $post;
         }
 
         return [
             'posts' => $posts,
-            'total' => $totalPosts
+            'total' => (int)$totalPosts
         ];
     }
 

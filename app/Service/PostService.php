@@ -8,6 +8,7 @@ use JackBerck\Ambatuflexing\Domain\PostImage;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
+use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
 use JackBerck\Ambatuflexing\Repository\UserRepository;
@@ -17,13 +18,15 @@ class PostService
     private PostRepository $postRepository;
     private PostImageRepository $postImageRepository;
     private UserRepository $userRepository;
+    private LikeRepository $likeRepository;
     private string $uploadDir = __DIR__ . "/../../public/images/posts/";
 
-    public function __construct(PostRepository $postRepository, PostImageRepository $postImageRepository, UserRepository $userRepository)
+    public function __construct(PostRepository $postRepository, PostImageRepository $postImageRepository, UserRepository $userRepository, LikeRepository $likeRepository)
     {
         $this->postRepository = $postRepository;
         $this->postImageRepository = $postImageRepository;
         $this->userRepository = $userRepository;
+        $this->likeRepository = $likeRepository;
     }
 
     /**

@@ -15,4 +15,6 @@ class FindPost
     public ?\string $authorPosition = null;
     public ?\string $authorPhoto = null;
     public ?\string $banner = null;
+    public int $commentCount = 0;
+    public int $likeCount = 0;
 }

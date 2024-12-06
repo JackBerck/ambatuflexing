@@ -11,4 +11,6 @@ class DetailsPost
     public ?string $authorPosition = null;
     public ?string $authorPhoto = null;
     public array $images = [];
+    public int $commentCount = 0;
+    public int $likeCount = 0;
 }

@@ -27,10 +27,10 @@ class LikeRepository
         $stmt->execute([$like->userId, $like->postId]);
     }
 
-    public function getLikesCount(Like $like): int
+    public function getLikesCount(int $postId): int
     {
         $stmt = $this->connection->prepare("SELECT COUNT(*) as total FROM likes WHERE post_id=?");
-        $stmt->execute([$like->postId]);
+        $stmt->execute([$postId]);
         $data = $stmt->fetch();
         $stmt->closeCursor();
         return isset($data['total']) ? (int)$data['total'] : 0;

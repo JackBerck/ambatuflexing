@@ -41,15 +41,28 @@ class PostRepository
     public function details(int $postId): ?DetailsPost
     {
         $query = "
-    SELECT posts.*, post_images.image, users.username ,users.photo, users.position
-    FROM posts
-    LEFT JOIN post_images ON posts.id = post_images.post_id
-    LEFT JOIN users ON posts.user_id = users.id
-    WHERE posts.id = ?";
+        SELECT 
+            posts.*, 
+            users.username, 
+            users.photo, 
+            users.position,
+            COALESCE(GROUP_CONCAT(post_images.image ORDER BY post_images.id ASC), '') AS images,
+            (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS total_likes,
+            (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS total_comments
+        FROM 
+            posts
+        LEFT JOIN 
+            post_images ON posts.id = post_images.post_id
+        LEFT JOIN 
+            users ON posts.user_id = users.id
+        WHERE 
+            posts.id = ?
+        GROUP BY 
+            posts.id, users.username, users.photo, users.position";
 
         $stmt = $this->connection->prepare($query);
         $stmt->execute([$postId]);
-        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // Jika tidak ada data yang ditemukan, return null
         if (empty($data)) {
@@ -58,28 +71,26 @@ class PostRepository
 
         // Membuat objek Post
         $post = new Post();
-        $post->id = $data[0]['id'];
-        $post->title = $data[0]['title'];
-        $post->content = $data[0]['content'];
-        $post->category = $data[0]['category'];
-        $post->createdAt = $data[0]['created_at'];
-        $post->updatedAt = $data[0]['updated_at'];
-        $post->authorId = $data[0]['user_id'];
+        $post->id = $data['id'];
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->category = $data['category'];
+        $post->createdAt = $data['created_at'];
+        $post->updatedAt = $data['updated_at'];
+        $post->authorId = $data['user_id'];
 
         // Memproses gambar-gambar yang terkait
-        $images = [];
-        foreach ($data as $row) {
-            if (!empty($row['image'])) {
-                $images[] = $row['image'];
-            }
-        }
+        $images = explode(',', $data['images']);
 
+        // Membuat objek DetailsPost
         $result = new DetailsPost();
         $result->post = $post;
         $result->images = $images;
-        $result->author = $data[0]['username'];
-        $result->authorPhoto = $data[0]['photo'];
-        $result->authorPosition = $data[0]['position'];
+        $result->author = $data['username'];
+        $result->authorPhoto = $data['photo'];
+        $result->authorPosition = $data['position'];
+        $result->likeCount = (int)$data['total_likes'];
+        $result->commentCount = (int)$data['total_comments'];
 
         return $result;
     }
@@ -90,25 +101,25 @@ class PostRepository
 
         // Mempersiapkan query dasar untuk pengambilan data
         $query = "
-        SELECT 
-            p.id AS post_id, 
-            p.title AS post_title, 
-            p.content AS post_content, 
-            p.category AS post_category, 
-            p.created_at AS post_created_at, 
-            p.updated_at AS post_updated_at, 
-            p.user_id AS post_user_id,
-            u.username AS post_author,
-            u.position AS post_author_position,
-            u.photo AS post_author_photo,
-            pi.image AS banner_image
-        FROM 
-            posts p
-        JOIN 
-            users u ON p.user_id = u.id 
-        LEFT JOIN 
-            post_images pi ON pi.post_id = p.id
-        WHERE 1=1";
+    SELECT 
+        p.id AS post_id, 
+        p.title AS post_title, 
+        p.content AS post_content, 
+        p.category AS post_category, 
+        p.created_at AS post_created_at, 
+        p.updated_at AS post_updated_at, 
+        p.user_id AS post_user_id,
+        u.username AS post_author,
+        u.position AS post_author_position,
+        u.photo AS post_author_photo,
+        (SELECT pi.image FROM post_images pi WHERE pi.post_id = p.id LIMIT 1) AS banner_image,
+        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS total_likes,
+        (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comments
+    FROM 
+        posts p
+    JOIN 
+        users u ON p.user_id = u.id 
+    WHERE 1=1";
 
         // Mempersiapkan array untuk parameter
         $params = [];
@@ -143,13 +154,13 @@ class PostRepository
 
         // Query terpisah untuk mendapatkan total count
         $countQuery = "
-        SELECT 
-            COUNT(*) as total_count
-        FROM 
-            posts p
-        JOIN 
-            users u ON p.user_id = u.id
-        WHERE 1=1";
+    SELECT 
+        COUNT(*) as total_count
+    FROM 
+        posts p
+    JOIN 
+        users u ON p.user_id = u.id
+    WHERE 1=1";
 
         // Gunakan kembali kondisi yang sama untuk konsistensi
         if ($request->title) {
@@ -185,7 +196,9 @@ class PostRepository
             $post->authorPosition = $row['post_author_position'];
             $post->authorPhoto = $row['post_author_photo'];
             $post->banner = $row['banner_image'];
-            $posts[] = $post;
+            $post->likeCount = (int)$row['total_likes'];
+            $post->commentCount = (int)$row['total_comments'];
+            $posts[] = (array)$post;
         }
 
         return [

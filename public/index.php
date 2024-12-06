@@ -13,11 +13,11 @@ Database::getConnection('prod');
 
 // Home
 Router::add("GET", "/", HomeController::class, "index");
-Router::add("GET", "/about", HomeController::class, "function");
-Router::add("GET", "/post/([0-9]*)", HomeController::class, "function");
-Router::add("GET", "/upload", HomeController::class, "function");
-Router::add("POST", "/upload", HomeController::class, "function");
-Router::add("GET", "/search", HomeController::class, "function");
+Router::add("GET", "/about", HomeController::class, "about");
+Router::add("GET", "/post/([0-9]*)", HomeController::class, "detail");
+Router::add("GET", "/upload", HomeController::class, "upload");
+Router::add("POST", "/upload", HomeController::class, "postUpload");
+Router::add("GET", "/search", HomeController::class, "search");
 
 //auth
 Router::add("GET", "/login", UserController::class, "login");

@@ -2,9 +2,9 @@
 
 namespace JackBerck\Ambatuflexing\Domain;
 
-class postImage
+class Like
 {
-    public int $id;
+    public int $userId;
     public int $postId;
-    public string $image;
+    public string $createdAt;
 }

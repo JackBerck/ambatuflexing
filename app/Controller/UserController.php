@@ -5,12 +5,17 @@ namespace JackBerck\Ambatuflexing\Controller;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
+use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserProfileUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserRegisterRequest;
+use JackBerck\Ambatuflexing\Repository\LikeRepository;
+use JackBerck\Ambatuflexing\Repository\PostImageRepository;
+use JackBerck\Ambatuflexing\Repository\PostRepository;
 use JackBerck\Ambatuflexing\Repository\SessionRepository;
 use JackBerck\Ambatuflexing\Repository\UserRepository;
+use JackBerck\Ambatuflexing\Service\PostService;
 use JackBerck\Ambatuflexing\Service\SessionService;
 use JackBerck\Ambatuflexing\Service\UserService;
 
@@ -18,6 +23,7 @@ class UserController
 {
     private UserService $userService;
     private SessionService $sessionService;
+    private PostService $postService;
 
     public function __construct()
     {
@@ -27,6 +33,11 @@ class UserController
 
         $sessionRepository = new SessionRepository($connection);
         $this->sessionService = new SessionService($sessionRepository, $userRepository);
+
+        $postRepository = new PostRepository($connection);
+        $postImageRepository = new PostImageRepository($connection);
+        $likeRepository = new LikeRepository($connection);
+        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository);
     }
 
     public function register(): void
@@ -132,15 +143,22 @@ class UserController
         }
     }
 
-    public function likedPosts()
+    public function likedPosts(): void
     {
         $user = $this->sessionService->current();
 
-        // get liked post
+        $request = new UserGetLikedPostRequest();
+        $request->userId = $user->id;
+        $request->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $request->limit = 20;
+
+        $response = $this->postService->likedPost($request);
 
         $model = [
             'title' => 'Liked Posts',
-            'user' => (array)$user
+            'user' => (array)$user,
+            'posts' => $response->likedPost,
+            'total' => $response->totalPost,
         ];
 
         View::render('User/likedPosts', $model);

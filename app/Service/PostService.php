@@ -10,6 +10,8 @@ use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
+use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
+use JackBerck\Ambatuflexing\Model\UserGetLikedPostResponse;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -149,6 +151,15 @@ class PostService
     public function search(FindPostRequest $request): FindPostResponse
     {
         return $this->postRepository->find($request);
+    }
+
+    public function likedPost(UserGetLikedPostRequest $request): UserGetLikedPostResponse
+    {
+        $data = $this->likeRepository->likedPosts($request->userId, $request->page, $request->limit);
+        $result = new UserGetLikedPostResponse();
+        $result->likedPost = $data['likedPost'];
+        $result->totalPost = $data['total'];
+        return $result;
     }
 
 }

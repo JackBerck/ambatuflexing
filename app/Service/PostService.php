@@ -7,6 +7,9 @@ use JackBerck\Ambatuflexing\Domain\Post;
 use JackBerck\Ambatuflexing\Domain\PostImage;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\DetailsPost;
+use JackBerck\Ambatuflexing\Model\FindPost;
+use JackBerck\Ambatuflexing\Model\FindPostRequest;
+use JackBerck\Ambatuflexing\Model\FindPostResponse;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -141,6 +144,11 @@ class PostService
         }
 
         return $post;
+    }
+
+    public function search(FindPostRequest $request): FindPostResponse
+    {
+        return $this->postRepository->find($request);
     }
 
 }

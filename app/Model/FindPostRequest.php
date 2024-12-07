@@ -8,4 +8,5 @@ class FindPostRequest
     public ?string $category = null;
     public ?int $userId = null;
     public int $page = 1;
+    public int $limit = 20;
 }

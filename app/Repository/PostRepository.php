@@ -6,6 +6,7 @@ use JackBerck\Ambatuflexing\Domain\Post;
 use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
+use JackBerck\Ambatuflexing\Model\FindPostResponse;
 
 class PostRepository
 {
@@ -95,9 +96,9 @@ class PostRepository
         return $result;
     }
 
-    public function find(FindPostRequest $request, int $limit = 20): array
+    public function find(FindPostRequest $request): FindPostResponse
     {
-        $offset = ($request->page - 1) * $limit;
+        $offset = ($request->page - 1) * $request->limit;
 
         // Mempersiapkan query dasar untuk pengambilan data
         $query = "
@@ -142,7 +143,7 @@ class PostRepository
 
         // Menambahkan limitasi dan offset
         $query .= " LIMIT :limit OFFSET :offset";
-        $params[':limit'] = $limit;
+        $params[':limit'] = $request->limit;
         $params[':offset'] = $offset;
 
         $stmt = $this->connection->prepare($query);
@@ -201,10 +202,10 @@ class PostRepository
             $posts[] = (array)$post;
         }
 
-        return [
-            'posts' => $posts,
-            'total' => (int)$totalPosts
-        ];
+        $result = new FindPostResponse();
+        $result->posts = $posts;
+        $result->totalPost = (int)$totalPosts;
+        return $result;
     }
 
 }

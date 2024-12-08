@@ -21,10 +21,30 @@ class LikeRepository
         return $like;
     }
 
-    public function unlike(Like $like): void
+    public function dislike(Like $like): void
     {
         $stmt = $this->connection->prepare("DELETE FROM likes WHERE user_id=? AND post_id=?");
         $stmt->execute([$like->userId, $like->postId]);
+    }
+
+    public function detail(int $userId, int $postId): ?Like
+    {
+        $stmt = $this->connection->prepare("SELECT user_id,post_id,created_at FROM likes WHERE user_id=? AND post_id=?");
+        $stmt->execute([$userId, $postId]);
+        $data = $stmt->fetch();
+        try {
+            if ($data) {
+                $like = new Like();
+                $like->postId = $data["post_id"];
+                $like->userId = $data["user_id"];
+                $like->createdAt = $data["created_at"];
+                return $like;
+            } else {
+                return null;
+            }
+        } finally {
+            $stmt->closeCursor();
+        }
     }
 
     public function getLikesCount(int $postId): int

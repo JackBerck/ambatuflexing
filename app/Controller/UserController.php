@@ -5,7 +5,9 @@ namespace JackBerck\Ambatuflexing\Controller;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
+use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
+use JackBerck\Ambatuflexing\Model\UserLikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserProfileUpdateRequest;
@@ -163,4 +165,39 @@ class UserController
 
         View::render('User/likedPosts', $model);
     }
+
+    public function postLike($postId): void
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserLikePostRequest();
+        $request->postId = (int)$postId;
+        $request->userId = $user->id;
+
+        try {
+            $this->postService->like($request);
+            View::redirect('/posts/' . $postId);
+        } catch (ValidationException $exception) {
+            View::redirect('/posts/' . $postId);
+        }
+    }
+
+    public function dislike(): void
+    {
+        $user = $this->sessionService->current();
+
+        parse_str(file_get_contents("php://input"), $_DELETE);
+
+        $request = new UserDislikePostRequest();
+        $request->postId = (int)$_DELETE['postId'] ?? null;
+        $request->userId = $user->id;
+
+        try {
+            $this->postService->dislike($request);
+            View::redirect('/user/dashboard/liked-posts');
+        } catch (ValidationException $exception) {
+            View::redirect('/user/dashboard/liked-posts');
+        }
+    }
+
 }

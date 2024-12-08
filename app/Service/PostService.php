@@ -9,7 +9,6 @@ use JackBerck\Ambatuflexing\Domain\Post;
 use JackBerck\Ambatuflexing\Domain\PostImage;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\DetailsPost;
-use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
 use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
@@ -17,6 +16,7 @@ use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostResponse;
 use JackBerck\Ambatuflexing\Model\UserLikePostRequest;
+use JackBerck\Ambatuflexing\Model\UserUpdatePostRequest;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -258,6 +258,38 @@ class PostService
         if ($user == null) throw new ValidationException("User not found");
         $post = $this->postRepository->details($request->postId);
         if ($post == null) throw new ValidationException('Post not found');
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function update(UserUpdatePostRequest $request): void
+    {
+
+        try {
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user == null) throw new ValidationException('User not found');
+
+            $data = $this->postRepository->details($request->postId);
+            if ($data == null) throw new ValidationException('Post not found');
+
+            if ($user->isAdmin != 'admin' && $user->id != $data->post->authorId) {
+                throw new ValidationException("Cannot update post");
+            }
+
+            $data->post->title = $request->title;
+            $data->post->content = $request->content;
+            $data->post->category = $request->category;
+
+            $this->postRepository->update($data->post);
+
+            Database::commitTransaction();
+        } catch (ValidationException $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
     }
 
 }

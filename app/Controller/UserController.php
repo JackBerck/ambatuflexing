@@ -14,6 +14,7 @@ use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserProfileUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserRegisterRequest;
+use JackBerck\Ambatuflexing\Model\UserUpdatePostRequest;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
@@ -242,13 +243,51 @@ class UserController
         }
     }
 
-    function updatePost():void
+    function updatePost($postId): void
     {
+        $user = $this->sessionService->current();
 
+        $model = [
+            'user' => (array)$user,
+        ];
+
+        try {
+            $details = $this->postService->details($postId);
+
+            if ($user->id != $details->post->authorId && $user->isAdmin != 'admin') throw new ValidationException("Error Cannot update this post");
+
+            $model['post'] = (array)$details->post;
+            $model['author'] = $details->author;
+            $model['authorPhoto'] = $details->authorPhoto;
+            $model['authorPosition'] = $details->authorPosition;
+            $model['images'] = $details->images;
+            $model['title'] = $details->post->title;
+
+            View::render('User/updatePost', $model);
+        } catch (ValidationException $exception) {
+            View::redirect('/user/dashboard/manage-posts');
+        }
     }
 
-    function putUpdatePost(): void
+    function putUpdatePost($postId): void
     {
+        $user = $this->sessionService->current();
+
+        parse_str(file_get_contents("php://input"), $_PUT);
+
+        $req = new UserUpdatePostRequest();
+        $req->userId = $user->id;
+        $req->postId = (int)$postId;
+        $req->title = $_PUT['title'] ?? null;
+        $req->content = $_PUT['content'] ?? null;
+        $req->category = $_PUT['category'] ?? null;
+
+        try {
+            $this->postService->update($req);
+            View::redirect('/user/dashboard/manage-posts');
+        } catch (ValidationException $exception) {
+            View::redirect('/user/dashboard/manage-posts');
+        }
 
     }
 

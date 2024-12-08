@@ -89,6 +89,7 @@ class HomeController
             $model['authorPhoto'] = $details->authorPhoto;
             $model['authorPosition'] = $details->authorPosition;
             $model['images'] = $details->images;
+            $model['title'] = $details->post->title;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {
             View::redirect('/');

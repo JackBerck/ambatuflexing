@@ -3,8 +3,10 @@
 namespace JackBerck\Ambatuflexing\Repository;
 
 use JackBerck\Ambatuflexing\Domain\Post;
+use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
+use JackBerck\Ambatuflexing\Model\FindPostResponse;
 
 class PostRepository
 {
@@ -30,68 +32,95 @@ class PostRepository
         return $post;
     }
 
-    public function delete(Post $post): void
+    public function delete(int $postId): void
     {
         $statement = $this->connection->prepare("DELETE FROM posts WHERE id = ?");
-        $statement->execute([$post->id]);
+        $statement->execute([$postId]);
     }
 
-    public function details(int $postId): ?array
+
+    public function details(int $postId): ?DetailsPost
     {
         $query = "
-        SELECT posts.*, post_images.image
-        FROM posts
-        LEFT JOIN post_images ON posts.id = post_images.post_id
-        WHERE posts.id = ?";
+        SELECT 
+            posts.*, 
+            users.username, 
+            users.photo, 
+            users.position,
+            COALESCE(GROUP_CONCAT(post_images.image ORDER BY post_images.id ASC), '') AS images,
+            (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS total_likes,
+            (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS total_comments
+        FROM 
+            posts
+        LEFT JOIN 
+            post_images ON posts.id = post_images.post_id
+        LEFT JOIN 
+            users ON posts.user_id = users.id
+        WHERE 
+            posts.id = ?
+        GROUP BY 
+            posts.id, users.username, users.photo, users.position";
 
         $stmt = $this->connection->prepare($query);
         $stmt->execute([$postId]);
-        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        $post = [
-            'id' => $data[0]['id'],
-            'title' => $data[0]['title'],
-            'content' => $data[0]['content'],
-            'category' => $data[0]['category'],
-            'created_at' => $data[0]['created_at'],
-            'updated_at' => $data[0]['updated_at'],
-            'user_id' => $data[0]['user_id'],
-            'images' => []
-        ];
-        foreach ($data as $row) {
-            if (!empty($row['image'])) {
-                $post['images'][] = $row['image'];
-            }
+        // Jika tidak ada data yang ditemukan, return null
+        if (empty($data)) {
+            return null;
         }
 
-        return $post;
+        // Membuat objek Post
+        $post = new Post();
+        $post->id = $data['id'];
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->category = $data['category'];
+        $post->createdAt = $data['created_at'];
+        $post->updatedAt = $data['updated_at'];
+        $post->authorId = $data['user_id'];
+
+        // Memproses gambar-gambar yang terkait
+        $images = explode(',', $data['images']);
+
+        // Membuat objek DetailsPost
+        $result = new DetailsPost();
+        $result->post = $post;
+        $result->images = $images;
+        $result->author = $data['username'];
+        $result->authorPhoto = $data['photo'];
+        $result->authorPosition = $data['position'];
+        $result->likeCount = (int)$data['total_likes'];
+        $result->commentCount = (int)$data['total_comments'];
+
+        return $result;
     }
 
-    public function find(FindPostRequest $request): array
+    public function find(FindPostRequest $request): FindPostResponse
     {
-        $limit = 20;
-        $offset = ($request->page - 1) * $limit;
+        $offset = ($request->page - 1) * $request->limit;
 
-        // Mempersiapkan query dasar untuk pengambilan data dan menghitung total
+        // Mempersiapkan query dasar untuk pengambilan data
         $query = "
-        SELECT 
-            p.id AS post_id, 
-            p.title AS post_title, 
-            p.content AS post_content, 
-            p.category AS post_category, 
-            p.created_at AS post_created_at, 
-            p.updated_at AS post_updated_at, 
-            p.user_id AS post_user_id,
-            (
-                SELECT pi.image 
-                FROM post_images pi 
-                WHERE pi.post_id = p.id 
-                LIMIT 1
-            ) AS banner_image,
-            COUNT(*) OVER() as total_count
-        FROM 
-            posts p
-        WHERE 1=1";
+    SELECT 
+        p.id AS post_id, 
+        p.title AS post_title, 
+        p.content AS post_content, 
+        p.category AS post_category, 
+        p.created_at AS post_created_at, 
+        p.updated_at AS post_updated_at, 
+        p.user_id AS post_user_id,
+        u.username AS post_author,
+        u.position AS post_author_position,
+        u.photo AS post_author_photo,
+        (SELECT pi.image FROM post_images pi WHERE pi.post_id = p.id LIMIT 1) AS banner_image,
+        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS total_likes,
+        (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comments
+    FROM 
+        posts p
+    JOIN 
+        users u ON p.user_id = u.id 
+    WHERE 1=1";
 
         // Mempersiapkan array untuk parameter
         $params = [];
@@ -114,7 +143,7 @@ class PostRepository
 
         // Menambahkan limitasi dan offset
         $query .= " LIMIT :limit OFFSET :offset";
-        $params[':limit'] = $limit;
+        $params[':limit'] = $request->limit;
         $params[':offset'] = $offset;
 
         $stmt = $this->connection->prepare($query);
@@ -124,8 +153,37 @@ class PostRepository
         $stmt->execute();
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        // Query terpisah untuk mendapatkan total count
+        $countQuery = "
+    SELECT 
+        COUNT(*) as total_count
+    FROM 
+        posts p
+    JOIN 
+        users u ON p.user_id = u.id
+    WHERE 1=1";
+
+        // Gunakan kembali kondisi yang sama untuk konsistensi
+        if ($request->title) {
+            $countQuery .= " AND p.title LIKE :title";
+        }
+
+        if ($request->category) {
+            $countQuery .= " AND p.category = :category";
+        }
+
+        if ($request->userId) {
+            $countQuery .= " AND p.user_id = :user_id";
+        }
+
+        $countStmt = $this->connection->prepare($countQuery);
+        foreach ($params as $key => &$value) {
+            $countStmt->bindParam($key, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
+        $countStmt->execute();
+        $totalPosts = $countStmt->fetchColumn();
+
         $posts = [];
-        $totalPosts = 0;
         foreach ($results as $row) {
             $post = new FindPost();
             $post->id = $row['post_id'];
@@ -135,19 +193,19 @@ class PostRepository
             $post->createdAt = $row['post_created_at'];
             $post->updatedAt = $row['post_updated_at'];
             $post->authorId = $row['post_user_id'];
+            $post->author = $row['post_author'];
+            $post->authorPosition = $row['post_author_position'];
+            $post->authorPhoto = $row['post_author_photo'];
             $post->banner = $row['banner_image'];
+            $post->likeCount = (int)$row['total_likes'];
+            $post->commentCount = (int)$row['total_comments'];
             $posts[] = (array)$post;
-
-            // Menentukan total jumlah postingan
-            if ($totalPosts == 0) {
-                $totalPosts = $row['total_count'];
-            }
         }
 
-        return [
-            'posts' => $posts,
-            'total' => $totalPosts
-        ];
+        $result = new FindPostResponse();
+        $result->posts = $posts;
+        $result->totalPost = (int)$totalPosts;
+        return $result;
     }
 
 }

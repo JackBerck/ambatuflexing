@@ -2,11 +2,11 @@
 
 namespace JackBerck\Ambatuflexing\Model;
 
-class FindPostRequest
+class UserUpdatePostRequest
 {
     public ?string $title = null;
+    public ?string $content = null;
     public ?string $category = null;
     public ?int $userId = null;
-    public int $page = 1;
-    public int $limit = 20;
+    public ?int $postId = null;
 }

@@ -5,6 +5,8 @@ namespace JackBerck\Ambatuflexing\Controller;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
+use JackBerck\Ambatuflexing\Model\FindPostRequest;
+use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Model\UserLikePostRequest;
@@ -198,6 +200,56 @@ class UserController
         } catch (ValidationException $exception) {
             View::redirect('/user/dashboard/liked-posts');
         }
+    }
+
+    function managePosts(): void
+    {
+        $user = $this->sessionService->current();
+        $model = [
+            'title' => 'Search Post'
+        ];
+
+        if ($user != null) {
+            $model['user'] = $user;
+        }
+
+        $req = new FindPostRequest();
+        $req->title = $_GET['title'] ?? null;
+        $req->category = $_GET['category'] ?? null;
+        $req->userId = $user->id;
+        $req->limit = 50;
+        $req->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+
+        $this->postService->search($req);
+
+        View::render('User/managePosts', $model);
+    }
+
+    function deletePost(): void
+    {
+        $user = $this->sessionService->current();
+        parse_str(file_get_contents("php://input"), $_DELETE);
+
+        $request = new UserDeletePostRequest();
+        $request->postId = (int)$_DELETE['postId'] ?? null;
+        $request->userId = $user->id;
+
+        try {
+            $this->postService->remove($request);
+            View::redirect('/user/dashboard/manage-posts');
+        } catch (ValidationException $exception) {
+            View::redirect('/user/dashboard/manage-posts');
+        }
+    }
+
+    function updatePost():void
+    {
+
+    }
+
+    function putUpdatePost(): void
+    {
+
     }
 
 }

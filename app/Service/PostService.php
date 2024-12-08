@@ -2,6 +2,7 @@
 
 namespace JackBerck\Ambatuflexing\Service;
 
+use http\Exception;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Domain\Like;
 use JackBerck\Ambatuflexing\Domain\Post;
@@ -11,6 +12,7 @@ use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
+use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostResponse;
@@ -156,6 +158,47 @@ class PostService
         return $this->postRepository->find($request);
     }
 
+    /**
+     * @throws ValidationException
+     */
+    public function remove(UserDeletePostRequest $request): void
+    {
+        $this->validateUserDeletePostRequest($request);
+
+        try {
+            Database::beginTransaction();
+            $post = $this->postRepository->details($request->postId);
+            if ($post === null) throw new ValidationException("Error Post is not available");
+
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user === null) {
+                throw new ValidationException("user not found");
+            }
+
+            if ($user->isAdmin != 'admin' && $user->id != $post->post->authorId) {
+                throw new ValidationException("Cannot delete post");
+            }
+
+            foreach ($post->images as $image) {
+                if (file_exists($this->uploadDir . $image->image)) {
+                    unlink($this->uploadDir . $image->image);
+                }
+            }
+
+            $this->postRepository->delete($request->postId);
+            Database::commitTransaction();
+        } catch (ValidationException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
+        }
+    }
+
+    private function validateUserDeletePostRequest(UserDeletePostRequest $request): void
+    {
+        if ($request->postId == "" or $request->postId <= 0 or empty($request->postId)) throw new ValidationException("Error Post Id isn't Valid");
+        if ($request->userId == "" or $request->userId <= 0 or empty($request->userId)) throw new ValidationException("User Id is required");
+    }
+
     public function likedPost(UserGetLikedPostRequest $request): UserGetLikedPostResponse
     {
         $data = $this->likeRepository->likedPosts($request->userId, $request->page, $request->limit);
@@ -166,29 +209,42 @@ class PostService
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function like(UserLikePostRequest $request): void
     {
         $this->ValidateLikeAndDislike($request);
+        try {
+            Database::beginTransaction();
 
-        $likePost = new Like();
-        $likePost->postId = $request->postId;
-        $likePost->userId = $request->userId;
-        $this->likeRepository->like($likePost);
+            $likePost = new Like();
+            $likePost->postId = $request->postId;
+            $likePost->userId = $request->userId;
+            $this->likeRepository->like($likePost);
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
     }
 
     /**
-     * @throws ValidationException
+     * @throws \Exception
      */
     public function dislike(UserDislikePostRequest $request): void
     {
         $this->ValidateLikeAndDislike($request);
+        try {
+            Database::beginTransaction();
 
-        $dislikePost = new Like();
-        $dislikePost->postId = $request->postId;
-        $dislikePost->userId = $request->userId;
-        $this->likeRepository->dislike($dislikePost);
+            $dislikePost = new Like();
+            $dislikePost->postId = $request->postId;
+            $dislikePost->userId = $request->userId;
+            $this->likeRepository->dislike($dislikePost);
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
     }
 
     /**

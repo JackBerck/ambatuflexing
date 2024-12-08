@@ -32,10 +32,10 @@ class PostRepository
         return $post;
     }
 
-    public function delete(Post $post): void
+    public function delete(int $postId): void
     {
         $statement = $this->connection->prepare("DELETE FROM posts WHERE id = ?");
-        $statement->execute([$post->id]);
+        $statement->execute([$postId]);
     }
 
 

@@ -42,7 +42,7 @@ CREATE TABLE post_images
     post_id INT NOT NULL,
     image   VARCHAR(255),
 
-    FOREIGN KEY (post_id) REFERENCES posts (id)
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
 ) ENGINE InnoDB;
 
 CREATE TABLE likes

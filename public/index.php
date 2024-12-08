@@ -33,10 +33,10 @@ Router::add("PUT", "/user/dashboard", UserController::class, "putUpdateProfile")
 Router::add("PATCH", "/user/dashboard", UserController::class, "patchUpdatePassword");
 Router::add("GET", "/user/dashboard/liked-posts", UserController::class, "likedPosts");
 Router::add("DELETE", "/user/dashboard/liked-posts", UserController::class, "dislike");
-Router::add("GET", "/user/dashboard/manage-posts", UserController::class, "function");
-Router::add("DELETE", "/user/dashboard/manage-posts", UserController::class, "function");
-Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "function");
-Router::add("PUT", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "function");
+Router::add("GET", "/user/dashboard/manage-posts", UserController::class, "managePosts");
+Router::add("DELETE", "/user/dashboard/manage-posts", UserController::class, "deletePost");
+Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "updatePost");
+Router::add("PUT", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "putUpdatePost");
 
 // Admin
 Router::add("GET", "/admin/dashboard", HomeController::class, "function");

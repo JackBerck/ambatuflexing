@@ -16,6 +16,8 @@ Router::add("GET", "/", HomeController::class, "index");
 Router::add("GET", "/about", HomeController::class, "about");
 Router::add("GET", "/post/([0-9]*)", HomeController::class, "detail");
 Router::add("POST", "/post/([0-9]*)", UserController::class, "postLike");
+Router::add("POST", "/post/([0-9]*)/comment", UserController::class, "postComment");
+Router::add("DELETE", "/post/([0-9]*)/comment", UserController::class, "deleteComment");
 Router::add("GET", "/upload", HomeController::class, "upload");
 Router::add("POST", "/upload", HomeController::class, "postUpload");
 Router::add("GET", "/search", HomeController::class, "search");

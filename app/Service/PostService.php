@@ -2,8 +2,8 @@
 
 namespace JackBerck\Ambatuflexing\Service;
 
-use http\Exception;
 use JackBerck\Ambatuflexing\Config\Database;
+use JackBerck\Ambatuflexing\Domain\Comment;
 use JackBerck\Ambatuflexing\Domain\Like;
 use JackBerck\Ambatuflexing\Domain\Post;
 use JackBerck\Ambatuflexing\Domain\PostImage;
@@ -11,13 +11,16 @@ use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\DetailsPost;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
+use JackBerck\Ambatuflexing\Model\UserCommentPostRequest;
 use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostResponse;
 use JackBerck\Ambatuflexing\Model\UserLikePostRequest;
+use JackBerck\Ambatuflexing\Model\UserRemoveCommentPostRequest;
 use JackBerck\Ambatuflexing\Model\UserUpdatePostRequest;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
+use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
@@ -29,14 +32,16 @@ class PostService
     private PostImageRepository $postImageRepository;
     private UserRepository $userRepository;
     private LikeRepository $likeRepository;
+    private CommentRepository $commentRepository;
     private string $uploadDir = __DIR__ . "/../../public/images/posts/";
 
-    public function __construct(PostRepository $postRepository, PostImageRepository $postImageRepository, UserRepository $userRepository, LikeRepository $likeRepository)
+    public function __construct(PostRepository $postRepository, PostImageRepository $postImageRepository, UserRepository $userRepository, LikeRepository $likeRepository, CommentRepository $commentRepository)
     {
         $this->postRepository = $postRepository;
         $this->postImageRepository = $postImageRepository;
         $this->userRepository = $userRepository;
         $this->likeRepository = $likeRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -290,6 +295,80 @@ class PostService
             Database::rollbackTransaction();
             throw $exception;
         }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function comment(UserCommentPostRequest $request): void
+    {
+        $this->validateUserCommentPostRequest($request);
+        try {
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user == null) throw new ValidationException('User not found');
+            $post = $this->postRepository->details($request->postId);
+            if ($post == null) throw new ValidationException('Post not found');
+
+            $comment = new Comment();
+            $comment->postId = $request->postId;
+            $comment->userId = $request->userId;
+            $comment->comment = $request->comment;
+
+            $this->commentRepository->comment($comment);
+
+            Database::commitTransaction();
+        } catch (ValidationException $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function validateUserCommentPostRequest(UserCommentPostRequest $request): void
+    {
+        if ($request->postId <= 0 or empty($request->postId)) throw new ValidationException("Error Post Id isn't Valid");
+        if ($request->userId <= 0 or empty($request->userId)) throw new ValidationException("User Id is required");
+        if ($request->comment == "" or empty($request->comment)) throw new ValidationException("Comment cannot be empty");
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function removeComment(UserRemoveCommentPostRequest $request): void
+    {
+        $this->validateUserRemoveCommentPostRequest($request);
+        try {
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user == null) throw new ValidationException('User not found');
+            $post = $this->postRepository->details($request->postId);
+            if ($post == null) throw new ValidationException('Post not found');
+            $comment = $this->commentRepository->getComment($request->commentId);
+            if ($comment == null) throw new ValidationException("Comment not found");
+            if ($user->isAdmin !== 'admin' and $user->id != $request->userId) throw new ValidationException("User cannot deleted this comment");
+
+            $this->commentRepository->remove($request->commentId);
+
+            Database::commitTransaction();
+        } catch (ValidationException $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function validateUserRemoveCommentPostRequest(UserRemoveCommentPostRequest $request): void
+    {
+        if ($request->commentId <= 0 or empty($request->commentId)) throw new ValidationException("Comment id isn't valid");
+        if ($request->postId <= 0 or empty($request->postId)) throw new ValidationException("Error Post Id isn't Valid");
+        if ($request->userId <= 0 or empty($request->userId)) throw new ValidationException("User Id is required");
     }
 
 }

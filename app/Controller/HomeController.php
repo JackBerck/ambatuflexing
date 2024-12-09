@@ -9,6 +9,7 @@ use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
+use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
@@ -34,8 +35,9 @@ class HomeController
         $postImageRepository = new PostImageRepository($connection);
         $userRepository = new UserRepository($connection);
         $likeRepository = new LikeRepository($connection);
+        $commentRepository = new CommentRepository($connection);
 
-        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository);
+        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository, $commentRepository);
     }
 
     function index(): void

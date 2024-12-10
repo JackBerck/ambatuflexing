@@ -28,8 +28,9 @@ class UserRepository
 
     public function update(User $user): User
     {
-        $statement = $this->connection->prepare("UPDATE users SET username = ?, password = ?,position = ?,bio = ?, photo = ?  WHERE id = ?");
+        $statement = $this->connection->prepare("UPDATE users SET email = ?, username = ?, password = ?,position = ?,bio = ?, photo = ?  WHERE id = ?");
         $statement->execute([
+            $user->email,
             $user->username,
             $user->password,
             $user->position,
@@ -40,6 +41,9 @@ class UserRepository
         return $user;
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function findByField(string $field, $value): ?User
     {
 

@@ -54,8 +54,9 @@ Router::add("DELETE", "/admin/dashboard/manage-posts", UserController::class, "d
 Router::add("GET", "/admin/dashboard/manage-posts/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("PUT", "/admin/dashboard/manage-posts/([0-9]*)", UserController::class, "putUpdatePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/dashboard/manage-users", AdminController::class, "manageUsers", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("PUT", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "updateUser", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PUT", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "putUpdateEmailUser", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PATCH", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 
 // error
 Router::add("GET", "/error", HomeController::class, "error");

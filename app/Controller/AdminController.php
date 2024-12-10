@@ -7,9 +7,12 @@ use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\AdminManageUsersRequest;
 use JackBerck\Ambatuflexing\Model\AdminManageUsersResponse;
+use JackBerck\Ambatuflexing\Model\AdminUpdateEmailUserRequest;
+use JackBerck\Ambatuflexing\Model\AdminUpdatePasswordRequest;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
+use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -138,6 +141,52 @@ class AdminController
         $model['manageUsers'] = $res->users;
         $model["totalUsers"] = $res->totalUsers;
         View::render('Admin/manageUsers', $model);
+    }
+
+    public function updateUser($userId): void
+    {
+        $user = $this->sessionService->current();
+        $model = ["user" => (array)$user];
+
+        try {
+            $model['updateUser'] = (array)$this->userService->findById($userId);
+            View::render('Admin/updateUser', $model);
+        } catch (ValidationException $exception) {
+            View::redirect('/admin/dashboard/manage-users');
+        }
+    }
+
+    public function putUpdateEmailUser($userId): void
+    {
+        parse_str(file_get_contents("php://input"), $_PUT);
+
+        $update = new AdminUpdateEmailUserRequest();
+        $update->userId = $userId;
+        $update->email = $_PUT['email'] ?? null;
+
+        try {
+            $this->userService->updateEmail($update);
+            View::redirect('/admin/dashboard/manage-users/' . $userId);
+        } catch (ValidationException $exception) {
+            View::redirect('/admin/dashboard/manage-users/' . $userId);
+        }
+
+    }
+
+    public function patchUpdatePassword($userId): void
+    {
+        parse_str(file_get_contents("php://input"), $_PATCH);
+
+        $request = new AdminUpdatePasswordRequest();
+        $request->userId = $userId;
+        $request->newPassword = $_PATCH['newPassword'];
+
+        try {
+            $this->userService->updatePasswordUser($request);
+            View::redirect("/admin/dashboard/manage-users/" . $userId);
+        } catch (ValidationException $exception) {
+            View::redirect("/admin/dashboard/manage-users/" . $userId);
+        }
     }
 
 }

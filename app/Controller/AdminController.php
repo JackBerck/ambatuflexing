@@ -9,6 +9,7 @@ use JackBerck\Ambatuflexing\Model\AdminManageUsersRequest;
 use JackBerck\Ambatuflexing\Model\AdminManageUsersResponse;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
+use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
 use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -97,6 +98,27 @@ class AdminController
         } catch (ValidationException $exception) {
             View::redirect('/admin/dashboard/manage-posts');
         }
+    }
+
+    public function likedPosts(): void
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserGetLikedPostRequest();
+        $request->userId = $user->id;
+        $request->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $request->limit = 20;
+
+        $response = $this->postService->likedPost($request);
+
+        $model = [
+            'title' => 'Liked Posts',
+            'user' => (array)$user,
+            'posts' => $response->likedPost,
+            'total' => $response->totalPost,
+        ];
+
+        View::render('Admin/likedPosts', $model);
     }
 
     public function manageUsers(): void

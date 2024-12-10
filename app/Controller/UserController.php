@@ -193,6 +193,7 @@ class UserController
     public function dislike(): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/liked-posts' : '/admin/dashboard/liked-posts';
 
         parse_str(file_get_contents("php://input"), $_DELETE);
 
@@ -202,9 +203,9 @@ class UserController
 
         try {
             $this->postService->dislike($request);
-            View::redirect('/user/dashboard/liked-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/liked-posts');
+            View::redirect($redirect);
         }
     }
 

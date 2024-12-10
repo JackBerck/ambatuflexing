@@ -5,6 +5,10 @@ namespace JackBerck\Ambatuflexing\Service;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Domain\User;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
+use JackBerck\Ambatuflexing\Model\AdminManageUsersRequest;
+use JackBerck\Ambatuflexing\Model\AdminManageUsersResponse;
+use JackBerck\Ambatuflexing\Model\AdminUpdateEmailUserRequest;
+use JackBerck\Ambatuflexing\Model\AdminUpdatePasswordRequest;
 use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserLoginResponse;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
@@ -223,6 +227,72 @@ class UserService
             trim($request->id) == "" || trim($request->oldPassword) == "" || trim($request->newPassword) == ""
         ) {
             throw new ValidationException("Old Password and New Password can not blank");
+        }
+    }
+
+    public function manage(AdminManageUsersRequest $request): AdminManageUsersResponse
+    {
+        $data = $this->userRepository->search($request->email, $request->username, $request->position, $request->page, $request->limit);
+        $res = new AdminManageUsersResponse();
+        $res->users = $data['users'];
+        $res->totalUsers = $data['total'];
+        return $res;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function findById(int $userId): ?User
+    {
+        if ($user = $this->userRepository->findByField('id', $userId)) throw new ValidationException("User is not found");
+        return $user;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function updateEmail(AdminUpdateEmailUserRequest $request): void
+    {
+        if ($request->userId <= 0 or empty($request->userId)) throw new ValidationException("User Id is required");
+        if (empty($request->email) or $request->email = "") throw new ValidationException("New Email required");
+
+        try {
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user == null) throw new ValidationException("User is not found");
+
+            if ($this->userRepository->findByField('email', $request->email)) {
+                throw new ValidationException("Email is already taken");
+            }
+            Database::beginTransaction();
+
+            $user->email = $request->email;
+            $this->userRepository->update($user);
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function updatePasswordUser(AdminUpdatePasswordRequest $request): void
+    {
+        try {
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findByField('id', $request->userId);
+            if ($user == null) {
+                throw new ValidationException("User is not found");
+            }
+
+            $user->password = password_hash($request->newPassword, PASSWORD_BCRYPT);
+            $this->userRepository->update($user);
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
         }
     }
 }

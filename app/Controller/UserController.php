@@ -6,6 +6,7 @@ use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
+use JackBerck\Ambatuflexing\Model\UserCommentPostRequest;
 use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserDislikePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
@@ -14,7 +15,9 @@ use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserProfileUpdateRequest;
 use JackBerck\Ambatuflexing\Model\UserRegisterRequest;
+use JackBerck\Ambatuflexing\Model\UserRemoveCommentPostRequest;
 use JackBerck\Ambatuflexing\Model\UserUpdatePostRequest;
+use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
@@ -42,7 +45,9 @@ class UserController
         $postRepository = new PostRepository($connection);
         $postImageRepository = new PostImageRepository($connection);
         $likeRepository = new LikeRepository($connection);
-        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository);
+        $commentRepository = new CommentRepository($connection);
+
+        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository, $commentRepository);
     }
 
     public function register(): void
@@ -188,6 +193,7 @@ class UserController
     public function dislike(): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/liked-posts' : '/admin/dashboard/liked-posts';
 
         parse_str(file_get_contents("php://input"), $_DELETE);
 
@@ -197,9 +203,9 @@ class UserController
 
         try {
             $this->postService->dislike($request);
-            View::redirect('/user/dashboard/liked-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/liked-posts');
+            View::redirect($redirect);
         }
     }
 
@@ -229,6 +235,7 @@ class UserController
     function deletePost(): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
         parse_str(file_get_contents("php://input"), $_DELETE);
 
         $request = new UserDeletePostRequest();
@@ -237,9 +244,9 @@ class UserController
 
         try {
             $this->postService->remove($request);
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         }
     }
 
@@ -272,6 +279,7 @@ class UserController
     function putUpdatePost($postId): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
 
         parse_str(file_get_contents("php://input"), $_PUT);
 
@@ -284,11 +292,47 @@ class UserController
 
         try {
             $this->postService->update($req);
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         }
 
     }
+
+    function postComment($postId): void
+    {
+        $user = $this->sessionService->current();
+
+        $req = new UserCommentPostRequest();
+        $req->postId = (int)$postId;
+        $req->userId = $user->id;
+        $req->comment = $_GET['comment'] ?? null;
+
+        try {
+            $this->postService->comment($req);
+            View::redirect('/post/' . $postId);
+        } catch (ValidationException $exception) {
+            View::redirect('/post/' . $postId);
+        }
+    }
+
+    public function deleteComment($postId): void
+    {
+        $user = $this->sessionService->current();
+
+        parse_str(file_get_contents("php://input"), $_DELETE);
+
+        $req = new UserRemoveCommentPostRequest();
+        $req->userId = $user->id;
+        $req->postId = $postId;
+        $req->commentId = (int)$_DELETE['commentId'] ?? null;
+        try {
+            $this->postService->removeComment($req);
+            View::redirect('/post/' . $postId);
+        } catch (ValidationException $exception) {
+            View::redirect("/post/" . $postId);
+        }
+    }
+
 
 }

@@ -9,6 +9,7 @@ use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
 use JackBerck\Ambatuflexing\Model\FindPostResponse;
 use JackBerck\Ambatuflexing\Model\UserUploadPostRequest;
+use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
 use JackBerck\Ambatuflexing\Repository\PostRepository;
@@ -34,8 +35,9 @@ class HomeController
         $postImageRepository = new PostImageRepository($connection);
         $userRepository = new UserRepository($connection);
         $likeRepository = new LikeRepository($connection);
+        $commentRepository = new CommentRepository($connection);
 
-        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository);
+        $this->postService = new PostService($postRepository, $postImageRepository, $userRepository, $likeRepository, $commentRepository);
     }
 
     function index(): void
@@ -46,7 +48,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -68,7 +70,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         View::render('home/about', $model);
@@ -79,7 +81,7 @@ class HomeController
         $user = $this->sessionService->current();
         $model = [];
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         try {
@@ -141,7 +143,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -153,5 +155,17 @@ class HomeController
         $this->postService->search($req);
 
         View::render('home/search', $model);
+    }
+
+    public function error(): void
+    {
+        $user = $this->sessionService->current();
+        $model = [
+            'title' => 'Error 404',
+        ];
+        if ($user != null) {
+            $model['user'] = (array)$user;
+        }
+        View::render("Home/error", $model);
     }
 }

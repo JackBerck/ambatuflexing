@@ -54,6 +54,6 @@ class Router
         }
 
         http_response_code(404);
-        echo 'CONTROLLER NOT FOUND';
+        View::redirect("/error");
     }
 }

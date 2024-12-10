@@ -48,7 +48,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -70,7 +70,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         View::render('home/about', $model);
@@ -81,7 +81,7 @@ class HomeController
         $user = $this->sessionService->current();
         $model = [];
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         try {
@@ -143,7 +143,7 @@ class HomeController
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -155,5 +155,17 @@ class HomeController
         $this->postService->search($req);
 
         View::render('home/search', $model);
+    }
+
+    public function error(): void
+    {
+        $user = $this->sessionService->current();
+        $model = [
+            'title' => 'Error 404',
+        ];
+        if ($user != null) {
+            $model['user'] = (array)$user;
+        }
+        View::render("Home/error", $model);
     }
 }

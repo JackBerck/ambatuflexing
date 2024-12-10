@@ -5,6 +5,8 @@ namespace JackBerck\Ambatuflexing\Service;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Domain\User;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
+use JackBerck\Ambatuflexing\Model\AdminManageUsersRequest;
+use JackBerck\Ambatuflexing\Model\AdminManageUsersResponse;
 use JackBerck\Ambatuflexing\Model\UserLoginRequest;
 use JackBerck\Ambatuflexing\Model\UserLoginResponse;
 use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
@@ -224,5 +226,14 @@ class UserService
         ) {
             throw new ValidationException("Old Password and New Password can not blank");
         }
+    }
+
+    public function manage(AdminManageUsersRequest $request): AdminManageUsersResponse
+    {
+        $data = $this->userRepository->search($request->email, $request->username, $request->position, $request->page, $request->limit);
+        $res = new AdminManageUsersResponse();
+        $res->users = $data['users'];
+        $res->totalUsers = $data['total'];
+        return $res;
     }
 }

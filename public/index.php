@@ -10,6 +10,7 @@ use JackBerck\Ambatuflexing\Middleware\MustNotLoginMiddleware;
 use JackBerck\Ambatuflexing\Middleware\MustLoginMiddleware;
 use JackBerck\Ambatuflexing\Middleware\MustUserMiddleware;
 use JackBerck\Ambatuflexing\Middleware\MustAdminMiddleware;
+use JackBerck\Ambatuflexing\Controller\AdminController;
 
 Database::getConnection('prod');
 
@@ -43,18 +44,18 @@ Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", UserController::clas
 Router::add("PUT", "/user/dashboard/manage-posts/([0-9]*)", UserController::class, "putUpdatePost", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 
 // Admin
-Router::add("GET", "/admin/dashboard", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("PUT", "/admin/dashboard", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("PATCH", "/admin/dashboard", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard", AdminController::class, "dashboard", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PUT", "/admin/dashboard", UserController::class, "putUpdateProfile", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PATCH", "/admin/dashboard", UserController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/dashboard/liked-posts", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("DELETE", "/admin/dashboard/liked-posts", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/admin/dashboard/manage-posts", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("DELETE", "/admin/dashboard/manage-posts", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/user/dashboard/manage-posts/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("PUT", "/admin/dashboard/manage-posts/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/admin/dashboard/manage-users", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/admin/dashboard/manage-users/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("PUT", "/admin/dashboard/manage-users/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard/manage-posts", AdminController::class, "managePosts", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("DELETE", "/admin/dashboard/manage-posts", UserController::class, "deletePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard/manage-posts/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PUT", "/admin/dashboard/manage-posts/([0-9]*)", UserController::class, "putUpdatePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard/manage-users", AdminController::class, "manageUsers", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("PUT", "/admin/dashboard/manage-users/([0-9]*)", AdminController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 
 // error
 Router::add("GET", "/error", HomeController::class, "error");

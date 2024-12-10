@@ -234,6 +234,7 @@ class UserController
     function deletePost(): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
         parse_str(file_get_contents("php://input"), $_DELETE);
 
         $request = new UserDeletePostRequest();
@@ -242,9 +243,9 @@ class UserController
 
         try {
             $this->postService->remove($request);
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         }
     }
 
@@ -277,6 +278,7 @@ class UserController
     function putUpdatePost($postId): void
     {
         $user = $this->sessionService->current();
+        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
 
         parse_str(file_get_contents("php://input"), $_PUT);
 
@@ -289,9 +291,9 @@ class UserController
 
         try {
             $this->postService->update($req);
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         } catch (ValidationException $exception) {
-            View::redirect('/user/dashboard/manage-posts');
+            View::redirect($redirect);
         }
 
     }

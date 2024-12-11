@@ -219,6 +219,9 @@ class PostService
     public function like(UserLikePostRequest $request): void
     {
         $this->ValidateLikeAndDislike($request);
+
+        if($this->likeRepository->detail($request->userId, $request->postId))throw new ValidationException("Post has been liked");
+
         try {
             Database::beginTransaction();
 
@@ -238,6 +241,7 @@ class PostService
     public function dislike(UserDislikePostRequest $request): void
     {
         $this->ValidateLikeAndDislike($request);
+        if(!$this->likeRepository->detail($request->userId,$request->postId))throw new ValidationException("Post has not been liked");
         try {
             Database::beginTransaction();
 

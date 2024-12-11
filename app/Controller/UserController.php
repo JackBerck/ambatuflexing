@@ -2,6 +2,7 @@
 
 namespace JackBerck\Ambatuflexing\Controller;
 
+use JackBerck\Ambatuflexing\App\Flasher;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
@@ -66,8 +67,10 @@ class UserController
 
         try {
             $this->userService->register($request);
+            Flasher::set("Success", "Register Success");
             View::redirect('/login');
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/register');
         }
     }
@@ -90,6 +93,7 @@ class UserController
             $this->sessionService->create($response->user->id);
             View::redirect('/');
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/login');
         }
     }
@@ -127,8 +131,10 @@ class UserController
 
         try {
             $this->userService->updateProfile($request);
+            Flasher::set("Success", 'Update successfully');
             View::redirect($redirect);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect($redirect);
         }
     }
@@ -147,8 +153,10 @@ class UserController
 
         try {
             $this->userService->updatePassword($request);
+            Flasher::set("Success", 'Update Password successfully');
             View::redirect($redirect);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect($redirect);
         }
     }
@@ -184,8 +192,10 @@ class UserController
 
         try {
             $this->postService->like($request);
+            Flasher::set("Success", 'Post liked');
             View::redirect('/posts/' . $postId);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/posts/' . $postId);
         }
     }
@@ -203,8 +213,10 @@ class UserController
 
         try {
             $this->postService->dislike($request);
+            Flasher::set("Success", "Post disliked");
             View::redirect($redirect);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect($redirect);
         }
     }
@@ -244,8 +256,10 @@ class UserController
 
         try {
             $this->postService->remove($request);
+            Flasher::set("Success", 'Post deleted successfully');
             View::redirect($redirect);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect($redirect);
         }
     }
@@ -272,6 +286,7 @@ class UserController
 
             View::render('User/updatePost', $model);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/user/dashboard/manage-posts');
         }
     }
@@ -292,8 +307,10 @@ class UserController
 
         try {
             $this->postService->update($req);
+            Flasher::set("Success", 'Update Post successfully');
             View::redirect($redirect);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect($redirect);
         }
 
@@ -310,8 +327,10 @@ class UserController
 
         try {
             $this->postService->comment($req);
+            Flasher::set("Success", 'Comment has been added successfully');
             View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/post/' . $postId);
         }
     }
@@ -328,8 +347,10 @@ class UserController
         $req->commentId = (int)$_DELETE['commentId'] ?? null;
         try {
             $this->postService->removeComment($req);
+            Flasher::set("Success", "Comment has been successfully deleted");
             View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect("/post/" . $postId);
         }
     }

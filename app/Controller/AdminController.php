@@ -2,17 +2,15 @@
 
 namespace JackBerck\Ambatuflexing\Controller;
 
+use JackBerck\Ambatuflexing\App\Flasher;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
 use JackBerck\Ambatuflexing\Model\AdminManageUsersRequest;
-use JackBerck\Ambatuflexing\Model\AdminManageUsersResponse;
 use JackBerck\Ambatuflexing\Model\AdminUpdateEmailUserRequest;
 use JackBerck\Ambatuflexing\Model\AdminUpdatePasswordRequest;
 use JackBerck\Ambatuflexing\Model\FindPostRequest;
-use JackBerck\Ambatuflexing\Model\UserDeletePostRequest;
 use JackBerck\Ambatuflexing\Model\UserGetLikedPostRequest;
-use JackBerck\Ambatuflexing\Model\UserPasswordUpdateRequest;
 use JackBerck\Ambatuflexing\Repository\CommentRepository;
 use JackBerck\Ambatuflexing\Repository\LikeRepository;
 use JackBerck\Ambatuflexing\Repository\PostImageRepository;
@@ -97,8 +95,10 @@ class AdminController
             $model['images'] = $details->images;
             $model['title'] = $details->post->title;
 
+            Flasher::set("Success", 'Update post successfully');
             View::render('Admin/updatePost', $model);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/admin/dashboard/manage-posts');
         }
     }
@@ -152,6 +152,7 @@ class AdminController
             $model['updateUser'] = (array)$this->userService->findById($userId);
             View::render('Admin/updateUser', $model);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/admin/dashboard/manage-users');
         }
     }
@@ -166,8 +167,10 @@ class AdminController
 
         try {
             $this->userService->updateEmail($update);
+            Flasher::set("Success", 'Update Email user successfully');
             View::redirect('/admin/dashboard/manage-users/' . $userId);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/admin/dashboard/manage-users/' . $userId);
         }
 
@@ -183,8 +186,10 @@ class AdminController
 
         try {
             $this->userService->updatePasswordUser($request);
+            Flasher::set("Success", 'Update Password user successfully');
             View::redirect("/admin/dashboard/manage-users/" . $userId);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect("/admin/dashboard/manage-users/" . $userId);
         }
     }

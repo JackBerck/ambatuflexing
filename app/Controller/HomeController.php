@@ -2,6 +2,7 @@
 
 namespace JackBerck\Ambatuflexing\Controller;
 
+use JackBerck\Ambatuflexing\App\Flasher;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Domain\Like;
@@ -94,6 +95,7 @@ class HomeController
             $model['title'] = $details->post->title;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {
+            Flasher::set("Error", "Post " . $exception->getMessage(), "error");
             View::redirect('/');
         }
     }
@@ -129,8 +131,10 @@ class HomeController
         try {
             $this->postService->upload($req);
 
+            Flasher::set("Success", "Post Uploaded");
             View::redirect('/');
         } catch (ValidationException $exception) {
+            Flasher::set("Error", "Post " . $exception->getMessage(), "error");
             View::redirect('/upload');
         }
     }

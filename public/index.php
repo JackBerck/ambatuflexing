@@ -14,6 +14,12 @@ use JackBerck\Ambatuflexing\Controller\AdminController;
 
 Database::getConnection('prod');
 
+//set timezone
+date_default_timezone_set("Asia/jakarta");
+
+//set session for flasher message
+if (!session_id()) session_start();
+
 // Home
 Router::add("GET", "/", HomeController::class, "index");
 Router::add("GET", "/about", HomeController::class, "about");

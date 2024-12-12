@@ -203,7 +203,7 @@ class UserController
     public function dislike(): void
     {
         $user = $this->sessionService->current();
-        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/liked-posts' : '/admin/dashboard/liked-posts';
+        $redirect = $user->isAdmin == 'user' ? '/user/liked-posts' : '/admin/liked-posts';
 
         parse_str(file_get_contents("php://input"), $_DELETE);
 
@@ -247,7 +247,7 @@ class UserController
     function deletePost(): void
     {
         $user = $this->sessionService->current();
-        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
+        $redirect = $user->isAdmin == 'user' ? '/user/manage-posts' : '/admin/manage-posts';
         parse_str(file_get_contents("php://input"), $_DELETE);
 
         $request = new UserDeletePostRequest();
@@ -294,7 +294,7 @@ class UserController
     function putUpdatePost($postId): void
     {
         $user = $this->sessionService->current();
-        $redirect = $user->isAdmin == 'user' ? '/user/dashboard/manage-posts' : '/admin/dashboard/manage-posts';
+        $redirect = $user->isAdmin == 'user' ? '/user/manage-posts' : '/admin/manage-posts';
 
         parse_str(file_get_contents("php://input"), $_PUT);
 

@@ -99,7 +99,7 @@ class AdminController
             View::render('Admin/updatePost', $model);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
-            View::redirect('/admin/dashboard/manage-posts');
+            View::redirect('/admin/manage-posts');
         }
     }
 
@@ -153,7 +153,7 @@ class AdminController
             View::render('Admin/updateUser', $model);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
-            View::redirect('/admin/dashboard/manage-users');
+            View::redirect('/admin/manage-users');
         }
     }
 
@@ -168,10 +168,10 @@ class AdminController
         try {
             $this->userService->updateEmail($update);
             Flasher::set("Success", 'Update Email user successfully');
-            View::redirect('/admin/dashboard/manage-users/' . $userId);
+            View::redirect('/admin/manage-users/' . $userId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
-            View::redirect('/admin/dashboard/manage-users/' . $userId);
+            View::redirect('/admin/manage-users/' . $userId);
         }
 
     }
@@ -187,10 +187,10 @@ class AdminController
         try {
             $this->userService->updatePasswordUser($request);
             Flasher::set("Success", 'Update Password user successfully');
-            View::redirect("/admin/dashboard/manage-users/" . $userId);
+            View::redirect("/admin/manage-users/" . $userId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
-            View::redirect("/admin/dashboard/manage-users/" . $userId);
+            View::redirect("/admin/manage-users/" . $userId);
         }
     }
 

@@ -92,10 +92,11 @@ class HomeController
             $model['authorPhoto'] = $details->authorPhoto;
             $model['authorPosition'] = $details->authorPosition;
             $model['images'] = $details->images;
+            $model['comments'] = $details->comments;
             $model['title'] = $details->post->title;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {
-            Flasher::set("Error", "Post " . $exception->getMessage(), "error");
+            Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/');
         }
     }

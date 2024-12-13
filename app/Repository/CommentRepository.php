@@ -52,30 +52,32 @@ class CommentRepository
     public function getComment(int $postId): array
     {
         $stmt = $this->connection->prepare("
-            SELECT 
-                id,
-                users.photo,
-                users.username,
-                users.position,
-                comment,
-                created_at,
-            FROM
-                comments
-            JOIN 
-                users ON comments.user_id = users.id
-            WHERE post_id = ?
-            ");
+        SELECT 
+            comments.id AS comment_id,
+            users.photo,
+            users.username,
+            users.position,
+            comments.comment,
+            comments.created_at
+        FROM
+            comments
+        JOIN 
+            users ON comments.user_id = users.id
+        WHERE post_id = ?
+        ");
         $stmt->execute([$postId]);
         $data = $stmt->fetchAll();
         $comments = [];
         foreach ($data as $comment) {
-            $result = new Comment();
-            $result->id = $comment["id"];
-            $result->userId = $comment["user_id"];
-            $result->postId = $comment["post_id"];
-            $result->createdAt = $comment["created_at"];
-            $result->comment = $comment["comment"];
-            $comments[] = (array)$result;
+            $result = [
+                "id" => $comment["comment_id"],
+                "username" => $comment["username"],
+                "photo" => $comment["photo"],
+                "position" => $comment["position"],
+                "comment" => $comment["comment"],
+                "createdAt" => $comment["created_at"]
+            ];
+            $comments[] = $result;
         }
         return $comments;
     }

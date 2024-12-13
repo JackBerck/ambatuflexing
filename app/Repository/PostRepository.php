@@ -141,16 +141,18 @@ class PostRepository
             $params[':user_id'] = $request->userId;
         }
 
-        // Menambahkan limitasi dan offset
         $query .= " LIMIT :limit OFFSET :offset";
-        $params[':limit'] = $request->limit;
-        $params[':offset'] = $offset;
-
         $stmt = $this->connection->prepare($query);
+
         foreach ($params as $key => &$value) {
             $stmt->bindParam($key, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
         }
+
+        $stmt->bindValue(':limit', $request->limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, \PDO::PARAM_INT);
+
         $stmt->execute();
+
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         // Query terpisah untuk mendapatkan total count
@@ -177,11 +179,14 @@ class PostRepository
         }
 
         $countStmt = $this->connection->prepare($countQuery);
+
         foreach ($params as $key => &$value) {
             $countStmt->bindParam($key, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
         }
+
         $countStmt->execute();
         $totalPosts = $countStmt->fetchColumn();
+
 
         $posts = [];
         foreach ($results as $row) {

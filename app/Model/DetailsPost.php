@@ -13,4 +13,5 @@ class DetailsPost
     public array $images = [];
     public int $commentCount = 0;
     public int $likeCount = 0;
+    public array $comments = [];
 }

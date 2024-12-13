@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.section-padding-x {
+    @apply px-4 md:px-8;
+}
+
+.card-title-font-size {
+    @apply text-base md:text-lg lg:text-xl;
+}
+
+.price-title-font-size {
+    @apply text-sm md:text-base;
+}
+
+.description-font-size {
+    @apply text-xs md:text-sm;
+}
+
+.title-font-size {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+}
+
+.subtitle-font-size {
+    @apply text-lg md:text-2xl lg:text-3xl;
+}
+
+.subheader-font-size {
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+}
+
+.big-font-size {
+    @apply md:text-lg lg:text-xl;
+}
+
+.normal-font-size {
+    @apply text-sm lg:text-base xl:text-lg;
+}
+
+.small-font-size {
+    @apply text-xs md:text-sm;
+}
+
+.footer-font-size {
+    @apply text-sm md:text-base;
+}

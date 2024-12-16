@@ -45,7 +45,7 @@ $user = $model["user"] ?? null;
                     </a>
                 </li>
                 <?php
-                if ($user == null):?>
+                if (!$user):?>
                     <li>
                         <a href="/login" class="block py-2 px-3 rounded text-light-base bg-purple-base"
                            aria-current="page">
@@ -62,9 +62,9 @@ $user = $model["user"] ?? null;
                     <li>
                         <a href="/user/dashboard" class="rounded text-light-base flex items-center" aria-current="page">
                             <img
-                                    src="/images/profiles/<?= $user['photo'] ?? '/images/profiles/default.png' ?>"
+                                    src="/images/profiles/<?= $user['photo'] ?? 'default.svg' ?>"
                                     alt="photo profile <?= $user['username'] ?>"
-                                    class="w-10 object-cover aspect-square rounded-full"
+                                    class="w-10 object-cover aspect-square rounded-full "
                             />
                             <span class="block md:hidden ml-2"><?= $user['username'] ?></span>
                         </a>

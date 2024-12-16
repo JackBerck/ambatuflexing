@@ -8,9 +8,9 @@ class User
     public string $email;
     public string $username;
     public string $password;
-    public string $position;
-    public string $bio;
-    public string $photo;
+    public ?string $position = null;
+    public ?string $bio = null;
+    public ?string $photo = null;
     public string $isAdmin;
     public string $createdAt;
 }

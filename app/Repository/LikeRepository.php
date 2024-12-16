@@ -72,7 +72,9 @@ class LikeRepository
             u.photo AS photo,
             u.position AS position,
             pi.image AS banner_image,
-        COUNT(*) OVER() as total_count
+        COUNT(*) OVER() as total_count,
+        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS total_likes,
+        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS total_comments
         FROM 
             likes l
         JOIN 
@@ -108,6 +110,8 @@ class LikeRepository
             $liked->author = $row['author'];
             $liked->authorPosition = $row['position'];
             $liked->authorPhoto = $row['photo'];
+            $liked->commentCount = $row['total_comments'];
+            $liked->likeCount = $row['total_likes'];
 
             $likedPosts[] = $liked;
         }

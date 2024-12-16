@@ -61,9 +61,9 @@ class UserController
     public function postRegister(): void
     {
         $request = new UserRegisterRequest();
-        $request->email = $_POST['email'];
-        $request->username = $_POST['username'];
-        $request->password = $_POST['password'];
+        $request->email = $_POST['email'] ?? null;
+        $request->username = $_POST['username'] ?? null;
+        $request->password = $_POST['password'] ?? null;
 
         try {
             $this->userService->register($request);
@@ -85,9 +85,8 @@ class UserController
     public function postLogin(): void
     {
         $request = new UserLoginRequest();
-        $request->email = $_POST['email'];
-        $request->password = $_POST['password'];
-
+        $request->email = $_POST['email'] ?? null;
+        $request->password = $_POST['password'] ?? null;
         try {
             $response = $this->userService->login($request);
             $this->sessionService->create($response->user->id);
@@ -114,19 +113,19 @@ class UserController
         ]);
     }
 
-    public function putUpdateProfile(): void
+    public function postUpdateProfile(): void
     {
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/dashboard' : '/admin/dashboard';
 
         // Mengambil data dari PUT request
-        parse_str(file_get_contents("php://input"), $_PUT);
+//        parse_str(file_get_contents("php://input"), $_PUT);
 
         $request = new UserProfileUpdateRequest();
         $request->id = $user->id;
-        $request->username = $_PUT['username'] ?? null;
-        $request->position = $_PUT['position'] ?? null;
-        $request->bio = $_PUT['bio'] ?? null;
+        $request->username = $_POST['username'] ?? null;
+        $request->position = $_POST['position'] ?? null;
+        $request->bio = $_POST['bio'] ?? null;
         $request->photo = $_FILES['profile']['tmp_name'] != "" ? $_FILES['profile'] : null;
 
         try {
@@ -144,12 +143,12 @@ class UserController
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/dashboard' : '/admin/dashboard';
 
-        parse_str(file_get_contents("php://input"), $_PATCH);
+//        parse_str(file_get_contents("php://input"), $_PATCH);
 
         $request = new UserPasswordUpdateRequest();
         $request->id = $user->id;
-        $request->oldPassword = $_PATCH['oldPassword'];
-        $request->newPassword = $_PATCH['newPassword'];
+        $request->oldPassword = $_POST['oldPassword'];
+        $request->newPassword = $_POST['newPassword'];
 
         try {
             $this->userService->updatePassword($request);
@@ -205,10 +204,10 @@ class UserController
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/liked-posts' : '/admin/liked-posts';
 
-        parse_str(file_get_contents("php://input"), $_DELETE);
+//        parse_str(file_get_contents("php://input"), $_DELETE);
 
         $request = new UserDislikePostRequest();
-        $request->postId = (int)$_DELETE['postId'] ?? null;
+        $request->postId = (int)$_POST['postId'] ?? null;
         $request->userId = $user->id;
 
         try {
@@ -248,10 +247,10 @@ class UserController
     {
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/manage-posts' : '/admin/manage-posts';
-        parse_str(file_get_contents("php://input"), $_DELETE);
+//        parse_str(file_get_contents("php://input"), $_DELETE);
 
         $request = new UserDeletePostRequest();
-        $request->postId = (int)$_DELETE['postId'] ?? null;
+        $request->postId = (int)$_POST['postId'] ?? null;
         $request->userId = $user->id;
 
         try {
@@ -282,7 +281,7 @@ class UserController
             $model['authorPhoto'] = $details->authorPhoto;
             $model['authorPosition'] = $details->authorPosition;
             $model['images'] = $details->images;
-            $model['title'] = $details->post->title;
+            $model['title'] = "Update " . $details->post->title;
 
             View::render('User/updatePost', $model);
         } catch (ValidationException $exception) {
@@ -296,14 +295,14 @@ class UserController
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/manage-posts' : '/admin/manage-posts';
 
-        parse_str(file_get_contents("php://input"), $_PUT);
+//        parse_str(file_get_contents("php://input"), $_PUT);
 
         $req = new UserUpdatePostRequest();
         $req->userId = $user->id;
         $req->postId = (int)$postId;
-        $req->title = $_PUT['title'] ?? null;
-        $req->content = $_PUT['content'] ?? null;
-        $req->category = $_PUT['category'] ?? null;
+        $req->title = $_POST['title'] ?? null;
+        $req->content = $_POST['content'] ?? null;
+        $req->category = $_POST['category'] ?? null;
 
         try {
             $this->postService->update($req);
@@ -335,16 +334,14 @@ class UserController
         }
     }
 
-    public function deleteComment($postId): void
+    public function deleteComment($postId, $commentId): void
     {
         $user = $this->sessionService->current();
-
-        parse_str(file_get_contents("php://input"), $_DELETE);
 
         $req = new UserRemoveCommentPostRequest();
         $req->userId = $user->id;
         $req->postId = $postId;
-        $req->commentId = (int)$_DELETE['commentId'] ?? null;
+        $req->commentId = (int)$commentId ?? null;
         try {
             $this->postService->removeComment($req);
             Flasher::set("Success", "Comment has been successfully deleted");

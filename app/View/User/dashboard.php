@@ -1,3 +1,9 @@
+<?php
+
+$user = $model['user'] ?? [];
+
+?>
+
 <section
         id="profile"
         class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden"
@@ -6,13 +12,14 @@
         <div class="flex flex-col md:flex-row gap-8">
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
             <form
-                    action=""
+                    action="/user/dashboard"
+                    method="post"
                     class="small-font-size flex flex-col gap-4 mb-4 w-full max-w-lg"
             >
                 <div class="flex items-center gap-4">
                     <img
-                            src="/images/profiles/emily-amstrong.jpeg"
-                            alt="Foto profil"
+                            src="/images/profiles/<?= $user['photo'] ?? "default.svg" ?>"
+                            alt="Foto profil <?= $user['username'] ?>"
                             class="w-36 aspect-square rounded-full object-cover"
                     />
                     <div class="flex flex-col gap-4">
@@ -54,6 +61,7 @@
                             name="username"
                             id="username"
                             placeholder="Masukkan nama lengkap..."
+                            value="<?= $user['username'] ?>"
                     />
                 </div>
                 <div class="">
@@ -66,8 +74,41 @@
                             name="email"
                             id="email"
                             placeholder="Masukkan alamat email..."
+                            value="<?= $user['email'] ?>"
+                            readonly
                     />
                 </div>
+                <div class="">
+                    <label for="position" class="block font-semibold mb-2"
+                    >Position</label
+                    >
+                    <input
+                            class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
+                            type="text"
+                            name="position"
+                            id="position"
+                            value="<?= $user['position'] ?? "Malas ngoding mending scroll fesnuk" ?>"
+                    />
+                </div>
+                <div class="">
+                    <label for="bio" class="block font-semibold mb-2">
+                        Bio
+                    </label>
+                    <textarea name="bio" id="bio" cols="30" rows="4"
+                              class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"><?= $user['bio'] ?? "belum ada isinya nih" ?></textarea>
+                </div>
+
+                <div class="">
+                    <button
+                            type="submit"
+                            class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700">
+                        Perbarui Akun
+                    </button>
+                </div>
+            </form>
+            <form action="/user/dashboard/password" method="post"
+                  class="small-font-size flex flex-col gap-4 mb-4 w-full max-w-lg">
+
                 <div class="">
                     <label for="password" class="block font-semibold mb-2"
                     >Password</label
@@ -76,7 +117,7 @@
                         <input
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="password"
-                                name="password"
+                                name="oldPassword"
                                 id="password"
                                 placeholder="Masukkan password..."
                         />
@@ -107,7 +148,7 @@
                         <input
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="password"
-                                name="new-password"
+                                name="newPassword"
                                 id="new-password"
                                 placeholder="Masukkan password terbaru..."
                         />
@@ -165,10 +206,9 @@
                 <div class="">
                     <button
                             type="submit"
-                            class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700"
-                    >Perbarui Akun
-                    </button
-                    >
+                            class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700">
+                        Perbarui Password
+                    </button>
                 </div>
             </form>
         </div>

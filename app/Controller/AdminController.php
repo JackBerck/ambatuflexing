@@ -159,11 +159,11 @@ class AdminController
 
     public function putUpdateEmailUser($userId): void
     {
-        parse_str(file_get_contents("php://input"), $_PUT);
+//        parse_str(file_get_contents("php://input"), $_PUT);
 
         $update = new AdminUpdateEmailUserRequest();
         $update->userId = $userId;
-        $update->email = $_PUT['email'] ?? null;
+        $update->email = $_POST['email'] ?? null;
 
         try {
             $this->userService->updateEmail($update);
@@ -178,11 +178,11 @@ class AdminController
 
     public function patchUpdatePassword($userId): void
     {
-        parse_str(file_get_contents("php://input"), $_PATCH);
+//        parse_str(file_get_contents("php://input"), $_PATCH);
 
         $request = new AdminUpdatePasswordRequest();
         $request->userId = $userId;
-        $request->newPassword = $_PATCH['newPassword'];
+        $request->newPassword = $_POST['newPassword'];
 
         try {
             $this->userService->updatePasswordUser($request);

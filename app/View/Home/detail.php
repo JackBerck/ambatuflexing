@@ -63,8 +63,8 @@ var_dump($comments);
                 </div>
                 <div class="flex gap-2 items-center mb-2">
                     <img src="/images/profiles/<?= $author['photo'] ?? 'default.png' ?>"
-                            alt="<?= $author['username'] ?> Profile Photo"
-                            class="w-8 md:w-10 aspect-square object-cover rounded-full" />
+                         alt="<?= $author['username'] ?> Profile Photo"
+                         class="w-8 md:w-10 aspect-square object-cover rounded-full"/>
                     <div class="">
                         <p class="normal-font-size"><?= $author['username'] ?></p>
                         <p class="small-font-size"><?= $author['position'] ?></p>
@@ -120,6 +120,11 @@ var_dump($comments);
                                 <p class="normal-font-size mb-1"><?= $comment["comment"] ?></p>
                                 <p class="small-font-size"><?= $comment["createdAt"] ?></p>
                             </div>
+                            <?php if ($currentUser['id'] == $comment["userId"]): ?>
+                                <form action="/post<?= $detail['id'] ?>/comment/<?= $comment['id'] ?>">
+                                    <button type="submit">X</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>

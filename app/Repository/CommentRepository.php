@@ -54,6 +54,7 @@ class CommentRepository
         $stmt = $this->connection->prepare("
         SELECT 
             comments.id AS comment_id,
+            users.id,
             users.photo,
             users.username,
             users.position,
@@ -71,6 +72,7 @@ class CommentRepository
         foreach ($data as $comment) {
             $result = [
                 "id" => $comment["comment_id"],
+                "userId" => $comment["user_id"],
                 "username" => $comment["username"],
                 "photo" => $comment["photo"],
                 "position" => $comment["position"],

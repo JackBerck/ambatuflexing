@@ -21,7 +21,7 @@ class Flasher
             Swal.fire({
                  title: "' . $_SESSION['flash']['title'] . '",
                  text: "' . $_SESSION['flash']['message'] . '",
-                 icon: "' . $_SESSION['flash']['type'] . '"
+                 icon: "' . $_SESSION['flash']['type'] . '",
                 });
             </script>';
 

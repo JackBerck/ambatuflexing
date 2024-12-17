@@ -126,8 +126,7 @@ class UserController
         $request->username = $_POST['username'] ?? null;
         $request->position = $_POST['position'] ?? null;
         $request->bio = $_POST['bio'] ?? null;
-        $request->photo = $_FILES['profile']['tmp_name'] != "" ? $_FILES['profile'] : null;
-
+        $request->photo = isset($_FILES['profile']) && $_FILES['profile']['tmp_name'] ? $_FILES['profile'] : null;
         try {
             $this->userService->updateProfile($request);
             Flasher::set("Success", 'Update successfully');

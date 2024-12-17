@@ -15,6 +15,7 @@ $user = $model['user'] ?? [];
                     action="/user/dashboard"
                     method="post"
                     class="small-font-size flex flex-col gap-4 mb-4 w-full max-w-lg"
+                    enctype="multipart/form-data"
             >
                 <div class="flex items-center gap-4">
                     <img
@@ -31,7 +32,7 @@ $user = $model['user'] ?? [];
                             >
                             <input
                                     type="file"
-                                    name="profilePhoto"
+                                    name="profile"
                                     id="profilePhoto"
                                     class="hidden"
                             />
@@ -44,7 +45,6 @@ $user = $model['user'] ?? [];
                             >
                             <input
                                     type="file"
-                                    name="profilePhoto"
                                     id="profilePhoto"
                                     class="hidden"
                             />

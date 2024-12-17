@@ -8,5 +8,5 @@ class UserProfileUpdateRequest
     public ?string $username = null;
     public ?string $position = null;
     public ?string $bio = null;
-    public ?string $photo = null;
+    public ?array $photo = null;
 }

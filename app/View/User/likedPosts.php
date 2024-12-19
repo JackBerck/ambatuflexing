@@ -49,15 +49,15 @@ $posts = $model["posts"] ?? [];
                         <div class="mb-2">
                             <a href="">
                                 <h2 class="normal-font-size font-bold title_card-post">
-                                    <?= $post['title'] ?>
+                                    <?= truncateText($post['title'], 30) ?>
                                 </h2>
                             </a>
                             <p class="small-font-size description_card-post">
-                                <?= $post['content'] ?>
+                                <?= truncateText($post['content'], 40) ?>
                             </p>
                         </div>
                         <div class="flex justify-end items-center gap-2">
-                            <p class="small-font-size"><?= $post['createdAt'] ?></p>
+                            <p class="small-font-size"><?= timeAgo($post['createdAt']) ?></p>
                             <button class="flex items-center gap-2">
                                 <svg
                                         xmlns="http://www.w3.org/2000/svg"

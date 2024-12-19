@@ -44,6 +44,11 @@ $user = $model["user"] ?? null;
                         Tentang Kami
                     </a>
                 </li>
+                <li>
+                    <a href="/upload" class="block py-2 px-3 rounded text-light-base " aria-current="page">
+                        Upload
+                    </a>
+                </li>
                 <?php
                 if (!$user):?>
                     <li>

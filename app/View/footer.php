@@ -61,7 +61,7 @@
             </a>
         </div>
         <p class="mt-4 leading-6 text-center text-gray-300">
-            &#169; {new Date().getFullYear()} AmbatuFlex, Inc. All rights reserved.
+            &#169; <?= (new DateTime())->format("Y"); ?> AmbatuFlex, Inc. All rights reserved.
         </p>
     </div>
 </section>

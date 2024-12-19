@@ -60,39 +60,41 @@ class LikeRepository
     {
         $offset = ($page - 1) * $limit;
 
+        // Query utama untuk mengambil liked posts
         $sql = "
-        SELECT 
-            p.id AS post_id, 
-            p.title AS post_title, 
-            p.content AS post_content, 
-            p.category AS post_category, 
-            p.created_at AS post_created_at, 
-            p.updated_at AS post_updated_at,
-            u.username AS author, 
-            u.photo AS photo,
-            u.position AS position,
-            pi.image AS banner_image,
-        COUNT(*) OVER() as total_count,
-        (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS total_likes,
-        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS total_comments
-        FROM 
-            likes l
-        JOIN 
-            posts p ON l.post_id = p.id
-        JOIN 
-            users u ON p.user_id = u.id
-        LEFT JOIN 
-            post_images pi ON pi.post_id = p.id
-        WHERE 
-            l.user_id = ?
-        GROUP BY 
-            p.id
-        LIMIT 
-            ? OFFSET ?
+    SELECT 
+        p.id AS post_id, 
+        p.title AS post_title, 
+        p.content AS post_content, 
+        p.category AS post_category, 
+        p.created_at AS post_created_at, 
+        p.updated_at AS post_updated_at,
+        u.id AS authorId,
+        u.username AS author, 
+        u.photo AS photo,
+        u.position AS position,
+        pi.image AS banner_image,
+        (SELECT COUNT(*) FROM likes WHERE post_id = p.id) AS total_likes,
+        (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comments
+    FROM 
+        likes l
+    JOIN 
+        posts p ON l.post_id = p.id
+    JOIN 
+        users u ON p.user_id = u.id
+    LEFT JOIN 
+        post_images pi ON pi.post_id = p.id
+    WHERE 
+        l.user_id = ?
+    LIMIT 
+        ? OFFSET ?
     ";
 
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute([$userId, $limit, $offset]);
+        $stmt->bindValue(1, $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
 
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -105,7 +107,7 @@ class LikeRepository
             $liked->category = $row['post_category'];
             $liked->createdAt = $row['post_created_at'];
             $liked->updatedAt = $row['post_updated_at'];
-            $liked->authorId = $row['author'];
+            $liked->authorId = $row['authorId'];
             $liked->banner = $row['banner_image'];
             $liked->author = $row['author'];
             $liked->authorPosition = $row['position'];
@@ -116,8 +118,25 @@ class LikeRepository
             $likedPosts[] = $liked;
         }
 
+        // Query terpisah untuk mendapatkan total liked posts
+        $countQuery = "
+    SELECT 
+        COUNT(*) as total_count
+    FROM 
+        likes l
+    JOIN 
+        posts p ON l.post_id = p.id
+    WHERE 
+        l.user_id = ?
+    ";
+
+        $countStmt = $this->connection->prepare($countQuery);
+        $countStmt->bindValue(1, $userId, \PDO::PARAM_INT);
+        $countStmt->execute();
+        $totalLikedPosts = $countStmt->fetchColumn();
+
         return [
-            'total' => (int)$data['total_count'],
+            'total' => (int)$totalLikedPosts,
             'likedPost' => $likedPosts,
         ];
     }

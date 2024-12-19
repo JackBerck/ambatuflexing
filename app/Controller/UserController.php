@@ -165,7 +165,7 @@ class UserController
 
         $request = new UserGetLikedPostRequest();
         $request->userId = $user->id;
-        $request->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $request->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
         $request->limit = 20;
 
         $response = $this->postService->likedPost($request);
@@ -223,11 +223,11 @@ class UserController
     {
         $user = $this->sessionService->current();
         $model = [
-            'title' => 'Search Post'
+            'title' => 'Manage Post'
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -235,9 +235,11 @@ class UserController
         $req->category = $_GET['category'] ?? null;
         $req->userId = $user->id;
         $req->limit = 50;
-        $req->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $req->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
 
-        $this->postService->search($req);
+        $res = $this->postService->search($req);
+        $model["posts"] = $res->posts;
+        $model["total"] = $res->totalPost;
 
         View::render('User/managePosts', $model);
     }
@@ -321,7 +323,7 @@ class UserController
         $req = new UserCommentPostRequest();
         $req->postId = (int)$postId;
         $req->userId = $user->id;
-        $req->comment = $_GET['comment'] ?? null;
+        $req->comment = $_POST['comment'] ?? null;
 
         try {
             $this->postService->comment($req);
@@ -333,14 +335,14 @@ class UserController
         }
     }
 
-    public function deleteComment($postId, $commentId): void
+    public function deleteComment($postId): void
     {
         $user = $this->sessionService->current();
 
         $req = new UserRemoveCommentPostRequest();
         $req->userId = $user->id;
         $req->postId = $postId;
-        $req->commentId = (int)$commentId ?? null;
+        $req->commentId = $_POST['commentId'] ?? null;
         try {
             $this->postService->removeComment($req);
             Flasher::set("Success", "Comment has been successfully deleted");

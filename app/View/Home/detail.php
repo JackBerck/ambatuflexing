@@ -10,11 +10,8 @@ $author = [
 ];
 $images = $model['images'] ?? [];
 $comments = $model['comments'] ?? [];
-
-var_dump($detail);
-var_dump($author);
-var_dump($images);
-var_dump($comments);
+$commentCount = $model['commentCount'] ?? 0;
+$likeCount = $model['likeCount'] ?? 0;
 
 ?>
 
@@ -24,12 +21,21 @@ var_dump($comments);
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col gap-4">
-            <div class="">
-                <img
-                        src="/images/posts/chatgpt.webp"
-                        alt="Vue Cheatsheet"
-                        class="w-full rounded-lg shadow-purple-base shadow-md aspect-video"
-                />
+            <div class="swiper mySwiper max-w-xl">
+                <div class="swiper-wrapper">
+                    <?php foreach ($images as $image): ?>
+                        <div class="swiper-slide">
+                            <img
+                                    src="/images/posts/<?= $image ?>"
+                                    alt="image of <?= $detail["title"] ?>"
+                                    class="w-full object-cover rounded-lg aspect-video"
+                            />
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
             <div class="">
                 <div class="flex justify-end gap-4">
@@ -45,7 +51,7 @@ var_dump($comments);
                             ></path>
                         </svg
                         >
-                        <span class="normal-font-size">10</span>
+                        <span class="normal-font-size"><?= $likeCount ?></span>
                     </div>
                     <div class="flex items-center gap-2">
                         <svg
@@ -58,7 +64,7 @@ var_dump($comments);
                                     d="M123.6 391.3c12.9-9.4 29.6-11.8 44.6-6.4c26.5 9.6 56.2 15.1 87.8 15.1c124.7 0 208-80.5 208-160s-83.3-160-208-160S48 160.5 48 240c0 32 12.4 62.8 35.7 89.2c8.6 9.7 12.8 22.5 11.8 35.5c-1.4 18.1-5.7 34.7-11.3 49.4c17-7.9 31.1-16.7 39.4-22.7zM21.2 431.9c1.8-2.7 3.5-5.4 5.1-8.1c10-16.6 19.5-38.4 21.4-62.9C17.7 326.8 0 285.1 0 240C0 125.1 114.6 32 256 32s256 93.1 256 208s-114.6 208-256 208c-37.1 0-72.3-6.4-104.1-17.9c-11.9 8.7-31.3 20.6-54.3 30.6c-15.1 6.6-32.3 12.6-50.1 16.1c-.8 .2-1.6 .3-2.4 .5c-4.4 .8-8.7 1.5-13.2 1.9c-.2 0-.5 .1-.7 .1c-5.1 .5-10.2 .8-15.3 .8c-6.5 0-12.3-3.9-14.8-9.9c-2.5-6-1.1-12.8 3.4-17.4c4.1-4.2 7.8-8.7 11.3-13.5c1.7-2.3 3.3-4.6 4.8-6.9l.3-.5z"
                             ></path>
                         </svg>
-                        <span class="normal-font-size">3</span>
+                        <span class="normal-font-size"><?= $commentCount ?></span>
                     </div>
                 </div>
                 <div class="flex gap-2 items-center mb-2">
@@ -82,7 +88,7 @@ var_dump($comments);
                 <?php if ($currentUser): ?>
                     <form action="/post/<?= $detail["id"] ?>/comment" method="post" class="mb-4">
                         <div class="flex gap-4 mb-4">
-                            <img src="/images/profiles/<?= $currentUser['photo'] ?? 'default.png' ?>"
+                            <img src="/images/profiles/<?= $currentUser['photo'] ?? 'default.svg' ?>"
                                  alt="<?= $currentUser['username'] ?? "" ?> Profile Photo"
                                  class="w-10 h-10 aspect-square object-cover rounded-full"
                             />
@@ -90,7 +96,8 @@ var_dump($comments);
                 <textarea
                         class="bg-light-base focus:outline-none focus:shadow-outline border border-purple-base rounded py-2 px-4 block w-full appearance-none"
                         rows="3"
-                        placeholder="Tulis komentar..."></textarea>
+                        placeholder="Tulis komentar..."
+                        name="comment"></textarea>
                             </div>
                         </div>
                         <button type="submit"
@@ -106,9 +113,9 @@ var_dump($comments);
                     }
 
                     foreach ($comments as $comment): ?>
-                        <div class="shadow-purple-base shadow-sm p-2 rounded-sm">
+                        <div class="shadow-purple-base shadow-sm p-2 rounded-sm relative">
                             <div class="flex items-center gap-2 mb-2">
-                                <img src="<?= $comment['photo'] ?>"
+                                <img src="/images/profiles/<?= $comment['photo'] ?>"
                                      alt="comment.name Profile Photo"
                                      class="w-8 md:w-10 aspect-square object-cover rounded-full"/>
                                 <div class="">
@@ -116,12 +123,13 @@ var_dump($comments);
                                     <p class="small-font-size"><?= $comment["position"] ?></p>
                                 </div>
                             </div>
-                            <div class="">
+                            <div class="flex justify-between ">
                                 <p class="normal-font-size mb-1"><?= $comment["comment"] ?></p>
-                                <p class="small-font-size"><?= $comment["createdAt"] ?></p>
+                                <p class="small-font-size"><?= timeAgo($comment["createdAt"]) ?></p>
                             </div>
                             <?php if ($currentUser['id'] == $comment["userId"]): ?>
-                                <form action="/post<?= $detail['id'] ?>/comment/<?= $comment['id'] ?>">
+                                <form action="/post/<?= $detail['id'] ?>/comment/delete" method="post" class="absolute top-0 right-0">
+                                    <input type="hidden" name="commentId" value="<?= $comment['id'] ?>">
                                     <button type="submit">X</button>
                                 </form>
                             <?php endif; ?>
@@ -132,3 +140,40 @@ var_dump($comments);
         </div>
     </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".mySwiper", {
+        pagination: {
+            clickable: true,
+            el: ".swiper-pagination",
+        },
+        loop: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>
+
+<style>
+    .swiper {
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>

@@ -10,11 +10,13 @@
           rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="/css/style.css">
     <title><?= $model['title'] ?? 'DevFlex' ?></title>
 </head>
 <body class="bg-light-base text-dark-base font-poppins">
 <?php
+include_once __DIR__ . "/Components/utils.php";
 
 use JackBerck\Ambatuflexing\App\Flasher;
 

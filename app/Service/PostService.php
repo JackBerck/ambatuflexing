@@ -354,7 +354,7 @@ class PostService
             if ($user == null) throw new ValidationException('User not found');
             $post = $this->postRepository->details($request->postId);
             if ($post == null) throw new ValidationException('Post not found');
-            $comment = $this->commentRepository->getComment($request->commentId);
+            $comment = $this->commentRepository->find($request->commentId);
             if ($comment == null) throw new ValidationException("Comment not found");
             if ($user->isAdmin !== 'admin' and $user->id != $request->userId) throw new ValidationException("User cannot deleted this comment");
 

@@ -49,6 +49,11 @@ $user = $model["user"] ?? null;
                         Upload
                     </a>
                 </li>
+                <li>
+                    <a href="/search" class="block py-2 px-3 rounded text-light-base " aria-current="page">
+                        Search
+                    </a>
+                </li>
                 <?php
                 if (!$user):?>
                     <li>

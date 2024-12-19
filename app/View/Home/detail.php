@@ -117,11 +117,11 @@ $likeCount = $model['likeCount'] ?? 0;
                                  class="w-10 h-10 aspect-square object-cover rounded-full"
                             />
                             <div class="w-full">
-                <textarea
-                        class="bg-light-base focus:outline-none focus:shadow-outline border border-purple-base rounded py-2 px-4 block w-full appearance-none"
-                        rows="3"
-                        placeholder="Tulis komentar..."
-                        name="comment"></textarea>
+                        <textarea
+                                class="bg-light-base focus:outline-none focus:shadow-outline border border-purple-base rounded py-2 px-4 block w-full appearance-none"
+                                rows="3"
+                                placeholder="Tulis komentar..."
+                                name="comment"></textarea>
                             </div>
                         </div>
                         <button type="submit"
@@ -139,7 +139,7 @@ $likeCount = $model['likeCount'] ?? 0;
                     foreach ($comments as $comment): ?>
                         <div class="shadow-purple-base shadow-sm p-2 rounded-sm relative">
                             <div class="flex items-center gap-2 mb-2">
-                                <img src="/images/profiles/<?= $comment['photo'] ?>"
+                                <img src="/images/profiles/<?= $comment['photo'] ?? "default.svg" ?>"
                                      alt="comment.name Profile Photo"
                                      class="w-8 md:w-10 aspect-square object-cover rounded-full"/>
                                 <div class="">
@@ -153,7 +153,7 @@ $likeCount = $model['likeCount'] ?? 0;
                             </div>
                             <?php if ($currentUser['id'] == $comment["userId"]): ?>
                                 <form action="/post/<?= $detail['id'] ?>/comment/delete" method="post"
-                                      class="absolute top-0 right-0">
+                                      class="absolute top-0 right-0 deleteComment">
                                     <input type="hidden" name="commentId" value="<?= $comment['id'] ?>">
                                     <button type="submit">X</button>
                                 </form>
@@ -179,6 +179,31 @@ $likeCount = $model['likeCount'] ?? 0;
             prevEl: ".swiper-button-prev",
         },
     });
+
+    function alertConfirm() {
+        return Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to recover this comment!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No"
+        }).then((result) => {
+            return result.isConfirmed;
+        });
+    }
+
+    document.querySelectorAll(".deleteComment").forEach((e) => {
+        e.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (await alertConfirm()) {
+                e.target.submit();
+            }
+        })
+    });
+
 </script>
 
 <style>

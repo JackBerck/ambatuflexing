@@ -52,7 +52,7 @@ $posts = $model["posts"] ?? [];
                             />
                             <div class="">
                                 <h6 class="normal-font-size font-bold"><?= $post['author'] ?></h6>
-                                <p class="small-font-size"><?= $post['authorPosition'] ?>}</p>
+                                <p class="small-font-size"><?= $post['authorPosition'] ?></p>
                             </div>
                         </div>
                         <div class="mb-2">

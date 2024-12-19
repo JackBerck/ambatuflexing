@@ -26,51 +26,51 @@ $user = $model['user'] ?? null;
         id="asideMenu"
         class="fixed top-16 pt-4 md:pt-0 left-0 h-full w-64 transform -translate-x-full transition-transform md:w-1/3 lg:w-1/4 md:translate-x-0 md:static md:block pr-8 border-r border-indigo-100 z-50 bg-dark-base"
 >
-    <div class="sticky flex flex-col gap-2 text-sm">
+    <div class="sticky flex flex-col gap-2 text-sm ">
         <h2 class="pl-3 mb-4 text-2xl font-semibold">Pengaturan</h2>
         <?php if ($user["isAdmin"] == 'admin'): ?>
             <a href="/admin/dashboard"
-               class="flex items-center px-3 py-2.5 font-semibold">
+               class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Account Setting
             </a>
             <a
                     href="/admin/liked-posts"
-                    class="flex items-center px-3 py-2.5 font-semibold">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Liked Posts
             </a>
             <a
                     href="/admin/manage-posts"
-                    class="flex items-center px-3 py-2.5 font-semibold">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Manage Posts
             </a>
             <a
                     href="/admin/manage-users"
-                    class="flex items-center px-3 py-2.5 font-semibold">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Manage Users
             </a>
             <a
                     href="/logout"
-                    class="flex items-center px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
                 Logout
             </a>
         <?php else : ?>
             <a href="/user/dashboard"
-               class="flex items-center px-3 py-2.5 font-semibold">
+               class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Account Setting
             </a>
             <a
                     href="/user/liked-posts"
-                    class="flex items-center px-3 py-2.5 font-semibold">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Liked Posts
             </a>
             <a
                     href="/user/manage-posts"
-                    class="flex items-center px-3 py-2.5 font-semibold">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">
                 Manage Posts
             </a>
             <a
                     href="/logout"
-                    class="flex items-center px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
+                    class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
                 Logout
             </a>
         <?php endif; ?>

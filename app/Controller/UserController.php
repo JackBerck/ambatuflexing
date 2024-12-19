@@ -3,6 +3,7 @@
 namespace JackBerck\Ambatuflexing\Controller;
 
 use JackBerck\Ambatuflexing\App\Flasher;
+use JackBerck\Ambatuflexing\App\Router;
 use JackBerck\Ambatuflexing\App\View;
 use JackBerck\Ambatuflexing\Config\Database;
 use JackBerck\Ambatuflexing\Exception\ValidationException;
@@ -166,7 +167,7 @@ class UserController
         $request = new UserGetLikedPostRequest();
         $request->userId = $user->id;
         $request->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
-        $request->limit = 50;
+        $request->limit = 36;
 
         $response = $this->postService->likedPost($request);
 
@@ -235,7 +236,7 @@ class UserController
         $req->title = $_GET['title'] ?? null;
         $req->category = $_GET['category'] ?? null;
         $req->userId = $user->id;
-        $req->limit = 50;
+        $req->limit = 36;
         $req->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
 
         $res = $this->postService->search($req);
@@ -350,6 +351,35 @@ class UserController
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect("/post/" . $postId);
+        }
+    }
+
+    public function detailUser($userId): void
+    {
+        $user = $this->sessionService->current();
+
+        $model = [
+            'user' => (array)$user
+        ];
+
+        try {
+            $userSearch = $this->userService->findById($userId);
+
+            $req = new FindPostRequest();
+            $req->userId = $userId;
+            $req->limit = 36;
+            $req->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
+            $res = $this->postService->search($req);
+
+            $model["profile"] = (array)$userSearch;
+            $model["posts"] = $res->posts;
+            $model["total"] = $res->totalPost;
+            $model["limit"] = $req->limit;
+
+            View::render("User/profile", $model);
+        } catch (ValidationException $exception) {
+            Flasher::set("Not Found", $exception->getMessage(), "error");
+            View::redirect("/");
         }
     }
 

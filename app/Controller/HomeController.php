@@ -51,7 +51,7 @@ class HomeController
         }
 
         $req = new FindPostRequest();
-        $req->limit = 50;
+        $req->limit = 36;
         $req->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
 
         $res = $this->postService->search($req);
@@ -155,10 +155,14 @@ class HomeController
         $req = new FindPostRequest();
         $req->title = $_GET['title'] ?? null;
         $req->category = $_GET['category'] ?? null;
-        $req->limit = 50;
+        $req->limit = 36;
         $req->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
 
-        $this->postService->search($req);
+        $res = $this->postService->search($req);
+
+        $model['posts'] = $res->posts;
+        $model['total'] = $res->totalPost;
+        $model['limit'] = $req->limit;
 
         View::render('home/search', $model);
     }

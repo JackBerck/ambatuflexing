@@ -8,11 +8,6 @@ $author = [
 ];
 
 $images = $model['images'] ?? [];
-
-var_dump($post);
-var_dump($author);
-var_dump($images);
-
 ?>
 
 <section
@@ -20,9 +15,25 @@ var_dump($images);
         class="section-padding-x pt-24 pb-8 normal-font-size text-light-base bg-dark-base"
 >
     <div class="max-w-screen-lg container">
-        <h1 class="font-bold title-font-size mb-4">Buat Postingan</h1>
+        <h1 class="font-bold title-font-size mb-4">Update Post</h1>
         <form action="/admin/manage-posts/<?= $post['id'] ?>" method="post">
             <div class="flex flex-col gap-4 mb-4">
+                <div class="swiper mySwiper max-w-xl">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($images as $image): ?>
+                            <div class="swiper-slide">
+                                <img
+                                        src="/images/posts/<?= $image ?>"
+                                        alt="image of <?= $post["title"] ?>"
+                                        class="w-full object-cover rounded-lg aspect-video"
+                                />
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
                 <div>
                     <label for="name" class="block mb-2 font-medium"
                     >Judul <span class="text-red-600">*</span></label
@@ -80,8 +91,22 @@ var_dump($images);
                             clip-rule="evenodd"></path>
                 </svg
                 >
-                Tambahkan Postingan
+                Update Content
             </button>
         </form>
     </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper(".mySwiper", {
+        pagination: {
+            clickable: true,
+            el: ".swiper-pagination",
+        },
+        loop: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+    });
+</script>

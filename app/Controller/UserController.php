@@ -190,7 +190,6 @@ class UserController
         $request->userId = $user->id;
         try {
             $this->postService->like($request);
-            Flasher::set("Success", 'Post liked');
             View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
@@ -214,7 +213,6 @@ class UserController
 
         try {
             $this->postService->dislike($request);
-            Flasher::set("Success", "Post disliked");
             View::redirect($redirect);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
@@ -331,7 +329,6 @@ class UserController
 
         try {
             $this->postService->comment($req);
-            Flasher::set("Success", 'Comment has been added successfully');
             View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
@@ -349,7 +346,6 @@ class UserController
         $req->commentId = $_POST['commentId'] ?? null;
         try {
             $this->postService->removeComment($req);
-            Flasher::set("Success", "Comment has been successfully deleted");
             View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");

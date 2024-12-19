@@ -30,6 +30,7 @@ Router::add("POST", "/post/([0-9]*)/comment/delete", UserController::class, "del
 Router::add("GET", "/upload", HomeController::class, "upload", [MustLoginMiddleware::class]);
 Router::add("POST", "/upload", HomeController::class, "postUpload", [MustLoginMiddleware::class]);
 Router::add("GET", "/search", HomeController::class, "search");
+Router::add("GET", "/profile/([0-9]*)", UserController::class, "detailUser");
 
 //auth
 Router::add("GET", "/login", UserController::class, "login", [MustNotLoginMiddleware::class]);

@@ -69,7 +69,7 @@ class AdminController
         $req->title = $_GET['title'] ?? null;
         $req->category = $_GET['category'] ?? null;
         $req->userId = isset($_GET['userId']) && (int)$_GET['userId'] ? (int)$_GET['userId'] : null;
-        $req->limit = 50;
+        $req->limit = 36;
         $req->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
 
         $res = $this->postService->search($req);
@@ -112,7 +112,7 @@ class AdminController
         $request = new UserGetLikedPostRequest();
         $request->userId = $user->id;
         $request->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
-        $request->limit = 50;
+        $request->limit = 36;
 
         $response = $this->postService->likedPost($request);
 

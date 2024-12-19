@@ -1,4 +1,6 @@
 <?php
+
+$user = $model["profile"] ?? [];
 $posts = $model["posts"] ?? [];
 $total = $model["total"] ?? 0;
 
@@ -16,85 +18,82 @@ function buildPaginationUrl($page)
     $queryParams['page'] = $page; // Tambahkan parameter 'page' baru
     $newQuery = http_build_query($queryParams); // Bangun kembali query string
     return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : ''); // Gabungkan kembali
+
 }
 
 ?>
 
-
 <section
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base"
+        id="user"
+        class="section-padding-x pt-28 pb-24 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-gray-800 normal-font-size"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
-        <div class="flex flex-col gap-4">
-            <form class="max-w-xl small-font-size" method="get" action="/search">
-                <label
-                        for="default-search"
-                        class="mb-2 font-medium text-light-base sr-only">Search</label
-                >
-                <div class="relative">
-                    <div
-                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+        <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-8">
+            <div class="w-full md:w-1/3 lg:w-1/4 flex gap-4 md:block">
+                <img
+                        src="/images/profiles/<?= $user["photo"] ?>"
+                        alt="Foto <?= $user["username"] ?>"
+                        class="w-[128px] md:w-[448px] lg:w-[512px] mx-auto rounded-full object-cover aspect-square mb-4"
+                />
+                <div class="">
+                    <h1 class="subtitle-font-size font-bold md:text-center">
+                        <?= $user["username"] ?>
+                    </h1>
+                    <p class="md:text-center"><?= $user["position"] ?></p>
+                    <p class="small-font-size text-justify mb-1">
+                        <?= $user["bio"] ?>
+                    </p>
+                    <a
+                            href="mailto:<?= $user['email'] ?>"
+                            class="small-font-size underline flex items-center gap-2"
                     >
                         <svg
-                                class="w-4 h-4 text-gray-400"
-                                aria-hidden="true"
+                                fill="currentColor"
+                                class="text-light-base w-4"
                                 xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 20"
+                                viewBox="0 0 640 512"
                         >
                             <path
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path>
-                        </svg>
-                    </div>
-                    <input
-                            type="search"
-                            id="default-search"
-                            name="title"
-                            class="block w-full p-4 ps-10 text-light-base border bg-gray-700 border-gray-600 placeholder-gray-400 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Cari kursus yang kamu inginkan..."
-                            required
-                    />
-                    <button
-                            type="submit"
-                            class="text-light-base absolute end-2.5 bottom-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg px-4 py-2"
-                    >Search
-                    </button
-                    >
+                                    d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"
+                            ></path>
+                        </svg
+                        >
+                        <?= $user["email"] ?>
+                    </a>
                 </div>
-            </form>
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            </div>
+            <div
+                    class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 w-full md:w-2/3 lg:w-3/4"
+            >
                 <?php foreach ($posts as $post): ?>
-                    <div class="shadow-sm shadow-purple-base rounded-lg p-2">
-                        <a href="/post/<?= $post["id"] ?>">
+                    <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative">
+                        <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post["banner"] ?>"
-                                    alt="<?= $post["title"] ?>"
+                                    alt="<?= $user["username"] ?>"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
-                                    src="/images/profiles/<?= $post["authorPhoto"] ?? "default.svg" ?>"
-                                    alt="<?= $post["author"] ?> photo profile"
+                                    src="/images/profiles/<?= $post["authorPhoto"] ?>"
+                                    alt="<?= $user["username"] ?> Photo Profile"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
                             <div class="">
-                                <h6 class="normal-font-size font-bold"><?= $post["author"] ?></h6>
-                                <p class="small-font-size"><?= $post["authorPosition"] ?></p>
+                                <h6 class="normal-font-size font-bold"><?= $user["username"] ?></h6>
+                                <p class="small-font-size"><?= $user["position"] ?></p>
                             </div>
                         </div>
                         <div class="mb-2">
-                            <a href="/post/<?= $post["id"] ?>">
-                                <h2 class="normal-font-size font-bold title_card-post">
+                            <a href="/post/<?= $post['id'] ?>">
+                                <h2 class="normal-font-size font-bold title_card-post truncate-title-card">
                                     <?= truncateText($post["title"], 30) ?>
                                 </h2>
                             </a>
-                            <p class="small-font-size description_card-post">
-                                <?= truncateText($post["content"], 40) ?>                            </p>
+                            <p class="small-font-size description_card-post truncate-description-card">
+                                <?= truncateText($post["content"] . "", 40) ?>
+                            </p>
                         </div>
                         <div class="flex justify-end items-center gap-2">
                             <p class="small-font-size"><?= timeAgo($post["createdAt"]) ?></p>
@@ -124,29 +123,6 @@ function buildPaginationUrl($page)
                     </div>
                 <?php endforeach; ?>
             </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination"> <?php if ($currentPage > 1): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1) ?>"
-                               aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
-                            <a class="page-link" href="<?= buildPaginationUrl($i) ?>">
-                                <?= $i ?>
-                            </a>
-                        </li> <?php endfor; ?>
-                    <?php if ($currentPage < $totalPages): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1) ?>" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li> <?php endif; ?>
-                </ul>
-            </nav>
         </div>
     </div>
 </section>

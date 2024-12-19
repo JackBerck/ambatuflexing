@@ -36,7 +36,7 @@ function buildPaginationUrl($page)
                 <?php foreach ($posts as $post): ?>
                     <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative">
                         <form method="post" action="/admin/liked-posts"
-                              class="flex gap-2 items-center absolute top-2 right-2">
+                              class="flex gap-2 items-center absolute top-2 right-2 deletePost">
                             <input type="hidden" name="postId" value="<?= $post['id'] ?>">
                             <button type="submit" class="bg-purple-base p-2 rounded-full">
                                 <svg
@@ -131,3 +131,28 @@ function buildPaginationUrl($page)
         </div>
     </div>
 </section>
+<script>
+    function alertConfirm() {
+        return Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to recover this Post!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No"
+        }).then((result) => {
+            return result.isConfirmed;
+        });
+    }
+
+    document.querySelectorAll(".deletePost").forEach((e) => {
+        e.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (await alertConfirm()) {
+                e.target.submit();
+            }
+        })
+    });
+</script>

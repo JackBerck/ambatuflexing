@@ -4,3 +4,5 @@ vendor
 node_modules
 package-lock.json
 composer.lock
+public/images/posts
+public/images/profiles

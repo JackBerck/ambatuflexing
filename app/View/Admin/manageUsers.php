@@ -37,8 +37,8 @@ $page = ($total / 50);
                             <th><?= $user['email'] ?></th>
                             <th><?= $user['username'] ?></th>
                             <th><?= $user['position'] ?></th>
-                            <th><?= $user['photo'] ?></th>
-                            <th><?= $user['createdAt'] ?></th>
+                            <th><?= '/images/profiles/' . $user['photo'] ?? 'default.svg' ?></th>
+                            <th><?= timeAgo($user['createdAt']) ?></th>
                         </tr>
                     <?php endif;
                 endforeach; ?>

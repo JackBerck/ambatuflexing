@@ -1,3 +1,9 @@
+<?php
+
+$user = $model['user'] ?? null;
+
+?>
+
 <button
         id="asideToggle"
         class="block md:hidden p-3 bg-purple-base text-light-base font-semibold absolute top-20 left-0 rounded-r-lg transform transition-transform"
@@ -22,26 +28,52 @@
 >
     <div class="sticky flex flex-col gap-2 text-sm">
         <h2 class="pl-3 mb-4 text-2xl font-semibold">Pengaturan</h2>
-        <a
-                href="/user/dashboard"
-                class="flex items-center px-3 py-2.5 font-semibold">
-            Account Setting
-        </a>
-        <a
-                href="/user/liked-posts"
-                class="flex items-center px-3 py-2.5 font-semibold">
-            Liked Posts
-        </a>
-        <a
-                href="/user/manage-posts"
-                class="flex items-center px-3 py-2.5 font-semibold">
-            Manage Posts
-        </a>
-        <a
-                href="/logout"
-                class="flex items-center px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
-            Manage Posts
-        </a>
+        <?php if ($user["isAdmin"] == 'admin'): ?>
+            <a href="/admin/dashboard"
+               class="flex items-center px-3 py-2.5 font-semibold">
+                Account Setting
+            </a>
+            <a
+                    href="/admin/liked-posts"
+                    class="flex items-center px-3 py-2.5 font-semibold">
+                Liked Posts
+            </a>
+            <a
+                    href="/admin/manage-posts"
+                    class="flex items-center px-3 py-2.5 font-semibold">
+                Manage Posts
+            </a>
+            <a
+                    href="/admin/manage-users"
+                    class="flex items-center px-3 py-2.5 font-semibold">
+                Manage Users
+            </a>
+            <a
+                    href="/logout"
+                    class="flex items-center px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
+                Logout
+            </a>
+        <?php else : ?>
+            <a href="/user/dashboard"
+               class="flex items-center px-3 py-2.5 font-semibold">
+                Account Setting
+            </a>
+            <a
+                    href="/user/liked-posts"
+                    class="flex items-center px-3 py-2.5 font-semibold">
+                Liked Posts
+            </a>
+            <a
+                    href="/user/manage-posts"
+                    class="flex items-center px-3 py-2.5 font-semibold">
+                Manage Posts
+            </a>
+            <a
+                    href="/logout"
+                    class="flex items-center px-3 py-2.5 font-semibold bg-red-600 text-light-base rounded-lg">
+                Logout
+            </a>
+        <?php endif; ?>
     </div>
 </aside>
 

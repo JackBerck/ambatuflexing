@@ -12,9 +12,6 @@
     "php": ">=8",
     "ext-pdo": "*"
   },
-  "require-dev": {
-    "phpunit/phpunit": "9.5.8"
-  },
   "autoload": {
     "psr-4": {
       "JackBerck\\Ambatuflexing\\": "app"

@@ -91,6 +91,8 @@ class HomeController
             $model['authorPosition'] = $details->authorPosition;
             $model['images'] = $details->images;
             $model['comments'] = $details->comments;
+            $model["likeCount"] = $details->likeCount;
+            $model["commentCount"] = $details->commentCount;
             $model['title'] = $details->post->title;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {
@@ -126,7 +128,7 @@ class HomeController
         } else {
             $req->images = [];
         }
-
+        var_dump($req);
         try {
             $this->postService->upload($req);
 

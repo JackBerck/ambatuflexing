@@ -26,7 +26,7 @@ Router::add("GET", "/about", HomeController::class, "about");
 Router::add("GET", "/post/([0-9]*)", HomeController::class, "detail");
 Router::add("POST", "/post/([0-9]*)", UserController::class, "postLike", [MustLoginMiddleware::class]);
 Router::add("POST", "/post/([0-9]*)/comment", UserController::class, "postComment", [MustLoginMiddleware::class]);
-Router::add("POST", "/post/([0-9]*)/comment/([0-9]*)", UserController::class, "deleteComment", [MustLoginMiddleware::class]);
+Router::add("POST", "/post/([0-9]*)/comment/delete", UserController::class, "deleteComment", [MustLoginMiddleware::class]);
 Router::add("GET", "/upload", HomeController::class, "upload", [MustLoginMiddleware::class]);
 Router::add("POST", "/upload", HomeController::class, "postUpload", [MustLoginMiddleware::class]);
 Router::add("GET", "/search", HomeController::class, "search");

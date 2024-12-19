@@ -28,7 +28,7 @@ $posts = $model["posts"] ?? [];
                                 </svg>
                             </button>
                         </form>
-                        <a href="">
+                        <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
                                     alt="<?= $post["title"] ?>"
@@ -37,7 +37,7 @@ $posts = $model["posts"] ?? [];
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
-                                    src="/images/profiles/<?= $post['authorPhoto'] ?>"
+                                    src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
                                     alt="<?= $post['author'] ?> profile"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
@@ -47,17 +47,17 @@ $posts = $model["posts"] ?? [];
                             </div>
                         </div>
                         <div class="mb-2">
-                            <a href="">
+                            <a href="/post/<?= $post['id'] ?>">
                                 <h2 class="normal-font-size font-bold title_card-post">
-                                    <?= $post['title'] ?>
+                                    <?= truncateText($post['title'], 30) ?>
                                 </h2>
                             </a>
                             <p class="small-font-size description_card-post">
-                                <?= $post['content'] ?>
+                                <?= truncateText($post['content'], 40) ?>
                             </p>
                         </div>
                         <div class="flex justify-end items-center gap-2">
-                            <p class="small-font-size"><?= $post['createdAt'] ?></p>
+                            <p class="small-font-size"><?= timeAgo($post['createdAt']) ?></p>
                             <button class="flex items-center gap-2">
                                 <svg
                                         xmlns="http://www.w3.org/2000/svg"

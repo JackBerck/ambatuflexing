@@ -4,7 +4,7 @@
 >
     <div class="max-w-screen-lg container">
         <h1 class="font-bold title-font-size mb-4">Buat Postingan</h1>
-        <form action="/upload" method="post">
+        <form action="/upload" method="post" enctype="multipart/form-data">
             <div class="flex flex-col gap-4 mb-4">
                 <div>
                     <label for="name" class="block mb-2 font-medium"
@@ -40,7 +40,7 @@
                     <textarea
                             id="description"
                             rows="4"
-                            name="category"
+                            name="content"
                             class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500"
                             placeholder="Tuliskan deskripsi produk..."></textarea>
                 </div>
@@ -73,7 +73,7 @@
                                 SVG, PNG, JPG or GIF (MAX. 800x400px)
                             </p>
                         </div>
-                        <input id="dropzone-file" type="file" name="images[]" class="hidden"/>
+                        <input id="dropzone-file" type="file" name="images[]" class="hidden" multiple/>
                     </label>
                 </div>
             </div>

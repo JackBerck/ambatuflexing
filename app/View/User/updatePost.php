@@ -21,7 +21,7 @@ var_dump($images);
 >
     <div class="max-w-screen-lg container">
         <h1 class="font-bold title-font-size mb-4">Buat Postingan</h1>
-        <form action="/user/manage-posts/<?= $post['id'] ?>">
+        <form action="/user/manage-posts/<?= $post['id'] ?>" method="post">
             <div class="flex flex-col gap-4 mb-4">
                 <div>
                     <label for="name" class="block mb-2 font-medium"

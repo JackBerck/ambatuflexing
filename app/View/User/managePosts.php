@@ -46,7 +46,7 @@ $posts = $model["posts"] ?? [];
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
-                                    src="<?= $post['authorPhoto'] ?>"
+                                    src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
                                     alt="<?= $post['author'] ?>photo profile"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
@@ -56,17 +56,17 @@ $posts = $model["posts"] ?? [];
                             </div>
                         </div>
                         <div class="mb-2">
-                            <a href="">
+                            <a href="/post/<?= $post['id'] ?>">
                                 <h2 class="normal-font-size font-bold title_card-post">
-                                    <?= $post['title'] ?>
+                                    <?= truncateText($post['title'], 30) ?>
                                 </h2>
                             </a>
                             <p class="small-font-size description_card-post">
-                                <?= $post['content'] ?>
+                                <?= truncateText($post['content'], 40) ?>
                             </p>
                         </div>
                         <div class="flex justify-end items-center gap-2">
-                            <p class="small-font-size"><?= $post['createdAt'] ?></p>
+                            <p class="small-font-size"><?= timeAgo($post['createdAt']) ?></p>
                             <button class="flex items-center gap-2">
                                 <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -96,31 +96,3 @@ $posts = $model["posts"] ?? [];
         </div>
     </div>
 </section>
-
-<script>
-    function textTruncate(str, length, ending) {
-        if (length == null) {
-            length = 100;
-        }
-        if (ending == null) {
-            ending = "...";
-        }
-        if (str.length > length) {
-            return str.substring(0, length - ending.length) + ending;
-        } else {
-            return str;
-        }
-    }
-
-    const titleCardPost = document.querySelectorAll(".title_card-post");
-    titleCardPost.forEach((title) => {
-        title.textContent = textTruncate(title.textContent, 30);
-    });
-
-    const descriptionCardPost = document.querySelectorAll(
-        ".description_card-post"
-    );
-    descriptionCardPost.forEach((description) => {
-        description.textContent = textTruncate(description.textContent, 100);
-    });
-</script>

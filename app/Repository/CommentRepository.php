@@ -54,7 +54,7 @@ class CommentRepository
         $stmt = $this->connection->prepare("
         SELECT 
             comments.id AS comment_id,
-            users.id,
+            users.id as user_id,
             users.photo,
             users.username,
             users.position,

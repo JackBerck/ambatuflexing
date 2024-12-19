@@ -58,11 +58,11 @@ class AdminController
     {
         $user = $this->sessionService->current();
         $model = [
-            'title' => 'Search Post'
+            'title' => 'Manage Post'
         ];
 
         if ($user != null) {
-            $model['user'] = $user;
+            $model['user'] = (array)$user;
         }
 
         $req = new FindPostRequest();
@@ -70,9 +70,12 @@ class AdminController
         $req->category = $_GET['category'] ?? null;
         $req->userId = isset($_GET['userId']) && (int)$_GET['userId'] ? (int)$_GET['userId'] : null;
         $req->limit = 50;
-        $req->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+        $req->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
 
-        $this->postService->search($req);
+        $res = $this->postService->search($req);
+        $model["posts"] = $res->posts;
+        $model["total"] = $res->totalPost;
+        $model["limit"] = $req->limit;
 
         View::render('Admin/managePosts', $model);
     }
@@ -95,7 +98,6 @@ class AdminController
             $model['images'] = $details->images;
             $model['title'] = $details->post->title;
 
-            Flasher::set("Success", 'Update post successfully');
             View::render('Admin/updatePost', $model);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
@@ -109,16 +111,17 @@ class AdminController
 
         $request = new UserGetLikedPostRequest();
         $request->userId = $user->id;
-        $request->page = isset($_GET['page']) && (int)$_GET['page'] > 0 ? (int)$_GET['page'] : 1;
-        $request->limit = 20;
+        $request->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
+        $request->limit = 50;
 
         $response = $this->postService->likedPost($request);
 
         $model = [
-            'title' => 'Liked Posts',
             'user' => (array)$user,
+            'title' => 'Liked Posts',
             'posts' => $response->likedPost,
             'total' => $response->totalPost,
+            "limit" => $request->limit,
         ];
 
         View::render('Admin/likedPosts', $model);
@@ -140,6 +143,7 @@ class AdminController
 
         $model['manageUsers'] = $res->users;
         $model["totalUsers"] = $res->totalUsers;
+        $model["limit"] = $req->limit;
         View::render('Admin/manageUsers', $model);
     }
 
@@ -182,7 +186,7 @@ class AdminController
 
         $request = new AdminUpdatePasswordRequest();
         $request->userId = $userId;
-        $request->newPassword = $_POST['newPassword'];
+        $request->newPassword = $_POST['newPassword'] ?? null;
 
         try {
             $this->userService->updatePasswordUser($request);

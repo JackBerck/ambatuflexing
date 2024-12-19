@@ -231,10 +231,16 @@ class PostService
             $likePost->postId = $request->postId;
             $likePost->userId = $request->userId;
             $this->likeRepository->like($likePost);
+            Database::commitTransaction();
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
         }
+    }
+
+    public function checkLike($userId, $postId): bool
+    {
+        return $this->likeRepository->detail($userId, $postId) !== null;
     }
 
     /**
@@ -265,7 +271,7 @@ class PostService
     {
         if ($request->postId == "" or $request->postId <= 0 or empty($request->postId)) throw new ValidationException("Error Post Id isn't Valid");
         if ($request->userId == "" or $request->userId <= 0 or empty($request->userId)) throw new ValidationException("User Id is required");
-        $user = $this->userRepository->findByField('id', $request->postId);
+        $user = $this->userRepository->findByField('id', $request->userId);
         if ($user == null) throw new ValidationException("User not found");
         $post = $this->postRepository->details($request->postId);
         if ($post == null) throw new ValidationException('Post not found');

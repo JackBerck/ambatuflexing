@@ -43,7 +43,7 @@ Router::add("GET", "/user/dashboard", UserController::class, "dashboard", [MustL
 Router::add("POST", "/user/dashboard", UserController::class, "postUpdateProfile", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 Router::add("POST", "/user/dashboard/password", UserController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 Router::add("GET", "/user/liked-posts", UserController::class, "likedPosts", [MustLoginMiddleware::class, MustUserMiddleware::class]);
-Router::add("POST", "/user/liked-posts", UserController::class, "dislike", [MustLoginMiddleware::class, MustUserMiddleware::class]);
+Router::add("POST", "/user/liked-posts", UserController::class, "dislike", [MustLoginMiddleware::class]);
 Router::add("GET", "/user/manage-posts", UserController::class, "managePosts", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 Router::add("POST", "/user/manage-posts", UserController::class, "deletePost", [MustLoginMiddleware::class, MustUserMiddleware::class]);
 Router::add("GET", "/user/manage-posts/([0-9]*)", UserController::class, "updatePost", [MustLoginMiddleware::class, MustUserMiddleware::class]);
@@ -51,18 +51,18 @@ Router::add("POST", "/user/manage-posts/([0-9]*)", UserController::class, "putUp
 
 // Admin
 Router::add("GET", "/admin/dashboard", AdminController::class, "dashboard", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("POST", "/admin/dashboard", UserController::class, "putUpdateProfile", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("POST", "/admin/dashboard", UserController::class, "postUpdateProfile", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("POST", "/admin/dashboard/password", UserController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/liked-posts", AdminController::class, "likedPosts", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("POST", "/admin/liked-posts", UserController::class, "dislike", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/manage-posts", AdminController::class, "managePosts", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("POST", "/admin/manage-posts", UserController::class, "deletePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("GET", "/admin/manage-posts/([0-9]*)", HomeController::class, "function", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
+Router::add("GET", "/admin/manage-posts/([0-9]*)", AdminController::class, "updatePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("POST", "/admin/manage-posts/([0-9]*)", UserController::class, "putUpdatePost", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/manage-users", AdminController::class, "manageUsers", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("GET", "/admin/manage-users/([0-9]*)", AdminController::class, "updateUser", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 Router::add("POST", "/admin/manage-users/([0-9]*)", AdminController::class, "putUpdateEmailUser", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
-Router::add("POST", "/admin/manage-users/([0-9]*)/password", AdminController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustUserMiddleware::class]);
+Router::add("POST", "/admin/manage-users/([0-9]*)/password", AdminController::class, "patchUpdatePassword", [MustLoginMiddleware::class, MustAdminMiddleware::class]);
 
 // error
 Router::add("GET", "/error", HomeController::class, "error");

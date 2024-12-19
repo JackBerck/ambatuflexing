@@ -1,6 +1,23 @@
 <?php
 
 $posts = $model["posts"] ?? [];
+$total = $model["total"] ?? 0;
+
+$perPage = $model["limit"] ?? 50; // Jumlah resep per halaman
+$totalPages = ceil($total / $perPage); // Hitung total halaman
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Ambil halaman saat ini
+$currentPage = max(1, min($totalPages, $currentPage)); // Validasi halaman saat ini
+
+// Function to build pagination URL
+function buildPaginationUrl($page)
+{
+    $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
+    parse_str($parsedUrl['query'] ?? '', $queryParams);
+    unset($queryParams['page']); // Hapus parameter 'page' jika ada
+    $queryParams['page'] = $page; // Tambahkan parameter 'page' baru
+    $newQuery = http_build_query($queryParams); // Bangun kembali query string
+    return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : ''); // Gabungkan kembali
+}
 
 ?>
 
@@ -11,7 +28,11 @@ $posts = $model["posts"] ?? [];
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
+            <?php if ($total <= 0): ?>
+                <h2>No posts have been liked</h2>
+            <?php endif; ?>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+
                 <?php foreach ($posts as $post): ?>
                     <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative">
                         <form method="post" action="/user/liked-posts"
@@ -28,16 +49,16 @@ $posts = $model["posts"] ?? [];
                                 </svg>
                             </button>
                         </form>
-                        <a href="">
+                        <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
-                                    alt={post.post.title}
+                                    alt="<?= "image banner of" . $post["title"] ?>"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
-                                    src="/images/profiles/<?= $post['authorPhoto'] ?>"
+                                    src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
                                     alt="<?= $post['author'] ?> profile"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
@@ -47,7 +68,7 @@ $posts = $model["posts"] ?? [];
                             </div>
                         </div>
                         <div class="mb-2">
-                            <a href="">
+                            <a href="/post/<?= $post['id'] ?>">
                                 <h2 class="normal-font-size font-bold title_card-post">
                                     <?= truncateText($post['title'], 30) ?>
                                 </h2>
@@ -84,33 +105,29 @@ $posts = $model["posts"] ?? [];
                     </div>
                 <?php endforeach; ?>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination"> <?php if ($currentPage > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1) ?>"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationUrl($i) ?>">
+                                <?= $i ?>
+                            </a>
+                        </li> <?php endfor; ?>
+                    <?php if ($currentPage < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li> <?php endif; ?>
+                </ul>
+            </nav>
         </div>
     </div>
 </section>
-<script>
-    function textTruncate(str, length, ending) {
-        if (length == null) {
-            length = 100;
-        }
-        if (ending == null) {
-            ending = "...";
-        }
-        if (str.length > length) {
-            return str.substring(0, length - ending.length) + ending;
-        } else {
-            return str;
-        }
-    }
-
-    const titleCardPost = document.querySelectorAll(".title_card-post");
-    titleCardPost.forEach((title) => {
-        title.textContent = textTruncate(title.textContent, 30);
-    });
-
-    const descriptionCardPost = document.querySelectorAll(
-        ".description_card-post"
-    );
-    descriptionCardPost.forEach((description) => {
-        description.textContent = textTruncate(description.textContent, 100);
-    });
-</script>

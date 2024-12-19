@@ -76,30 +76,30 @@ class UserRepository
         }
     }
 
-    public function search(string $email, string $username, string $position, int $page = 1, int $limit = 50): array
+    public function search(?string $email, ?string $username, ?string $position, int $page = 1, int $limit = 50): array
     {
         $query = "
-        SELECT 
-            id,
-            username,
-            email,
-            password,
-            position,
-            bio,
-            photo,
-            is_admin,
-            created_at
-        FROM
-            users
-        WHERE 
-            1=1
-        ";
+    SELECT 
+        id,
+        username,
+        email,
+        password,
+        position,
+        bio,
+        photo,
+        is_admin,
+        created_at
+    FROM
+        users
+    WHERE 
+        1=1
+    ";
 
         $params = [];
 
         if ($email) {
             $query .= " AND email LIKE :email";
-            $params[':title'] = '%' . $email . '%';
+            $params[':email'] = '%' . $email . '%';
         }
 
         if ($username) {
@@ -124,11 +124,11 @@ class UserRepository
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $countQuery = "
-        SELECT 
-            COUNT(*) as total_count
-        FROM 
-            users
-        WHERE 1=1";
+    SELECT 
+        COUNT(*) as total_count
+    FROM 
+        users
+    WHERE 1=1";
 
         // Gunakan kembali kondisi yang sama untuk konsistensi
         if ($email) {
@@ -142,8 +142,14 @@ class UserRepository
         }
 
         $countStmt = $this->connection->prepare($countQuery);
-        foreach ($params as $key => &$value) {
-            $countStmt->bindParam($key, $value, is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        if ($email) {
+            $countStmt->bindValue(':email', '%' . $email . '%', \PDO::PARAM_STR);
+        }
+        if ($username) {
+            $countStmt->bindValue(':username', '%' . $username . '%', \PDO::PARAM_STR);
+        }
+        if ($position) {
+            $countStmt->bindValue(':position', '%' . $position . '%', \PDO::PARAM_STR);
         }
         $countStmt->execute();
         $totalUsers = $countStmt->fetchColumn();

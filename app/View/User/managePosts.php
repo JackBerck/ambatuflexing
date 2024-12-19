@@ -1,5 +1,22 @@
 <?php
 $posts = $model["posts"] ?? [];
+$total = $model["total"] ?? 0;
+
+$perPage = $model["limit"] ?? 50;
+$totalPages = ceil($total / $perPage);
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPage = max(1, min($totalPages, $currentPage));
+
+function buildPaginationUrl($page)
+{
+    $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
+    parse_str($parsedUrl['query'] ?? '', $queryParams);
+    unset($queryParams['page']);
+    $queryParams['page'] = $page;
+    $newQuery = http_build_query($queryParams);
+    return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : '');
+}
+
 ?>
 
 <section
@@ -9,6 +26,9 @@ $posts = $model["posts"] ?? [];
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
+            <?php if ($total <= 0): ?>
+                <h2>No posts have been uploaded</h2>
+            <?php endif; ?>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <?php foreach ($posts as $post): ?>
                     <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative">
@@ -93,6 +113,33 @@ $posts = $model["posts"] ?? [];
                     </div>
                 <?php endforeach; ?>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <?php if ($currentPage > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1) ?>"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationUrl($i) ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($currentPage < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+
         </div>
     </div>
 </section>

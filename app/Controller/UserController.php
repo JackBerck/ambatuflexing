@@ -166,15 +166,16 @@ class UserController
         $request = new UserGetLikedPostRequest();
         $request->userId = $user->id;
         $request->page = isset($_GET['page']) && ((int)$_GET['page'] >= 0) ? (int)$_GET['page'] : 1;
-        $request->limit = 20;
+        $request->limit = 50;
 
         $response = $this->postService->likedPost($request);
 
         $model = [
-            'title' => 'Liked Posts',
             'user' => (array)$user,
+            'title' => 'Liked Posts',
             'posts' => $response->likedPost,
             'total' => $response->totalPost,
+            "limit" => $request->limit,
         ];
 
         View::render('User/likedPosts', $model);
@@ -187,14 +188,13 @@ class UserController
         $request = new UserLikePostRequest();
         $request->postId = (int)$postId;
         $request->userId = $user->id;
-
         try {
             $this->postService->like($request);
             Flasher::set("Success", 'Post liked');
-            View::redirect('/posts/' . $postId);
+            View::redirect('/post/' . $postId);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
-            View::redirect('/posts/' . $postId);
+            View::redirect('/post/' . $postId);
         }
     }
 
@@ -202,6 +202,9 @@ class UserController
     {
         $user = $this->sessionService->current();
         $redirect = $user->isAdmin == 'user' ? '/user/liked-posts' : '/admin/liked-posts';
+
+        $getRedirect = isset($_GET["redirect"]) && ($_GET["redirect"] !== "") ? $_GET["redirect"] : false;
+        if ($getRedirect) $redirect = $getRedirect;
 
 //        parse_str(file_get_contents("php://input"), $_DELETE);
 
@@ -240,6 +243,7 @@ class UserController
         $res = $this->postService->search($req);
         $model["posts"] = $res->posts;
         $model["total"] = $res->totalPost;
+        $model["limit"] = $req->limit;
 
         View::render('User/managePosts', $model);
     }

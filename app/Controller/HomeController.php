@@ -93,6 +93,7 @@ class HomeController
             $model['comments'] = $details->comments;
             $model["likeCount"] = $details->likeCount;
             $model["commentCount"] = $details->commentCount;
+            $model["isCurrentPostLiked"] = $this->postService->checkLike($user->id, $postId);
             $model['title'] = $details->post->title;
             View::render('home/detail', $model);
         } catch (ValidationException $exception) {

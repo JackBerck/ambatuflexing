@@ -1,5 +1,22 @@
 <?php
 $posts = $model["posts"] ?? [];
+$total = $model["total"] ?? 0;
+
+$perPage = $model["limit"] ?? 50;
+$totalPages = ceil($total / $perPage);
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPage = max(1, min($totalPages, $currentPage));
+
+function buildPaginationUrl($page)
+{
+    $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
+    parse_str($parsedUrl['query'] ?? '', $queryParams);
+    unset($queryParams['page']);
+    $queryParams['page'] = $page;
+    $newQuery = http_build_query($queryParams);
+    return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : '');
+}
+
 ?>
 
 <section
@@ -52,7 +69,7 @@ $posts = $model["posts"] ?? [];
                             />
                             <div class="">
                                 <h6 class="normal-font-size font-bold"><?= $post['author'] ?></h6>
-                                <p class="small-font-size"><?= $post['authorPosition'] ?>}</p>
+                                <p class="small-font-size"><?= $post['authorPosition'] ?></p>
                             </div>
                         </div>
                         <div class="mb-2">
@@ -93,34 +110,32 @@ $posts = $model["posts"] ?? [];
                     </div>
                 <?php endforeach; ?>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <?php if ($currentPage > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1) ?>"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                            <a class="page-link" href="<?= buildPaginationUrl($i) ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($currentPage < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1) ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
     </div>
 </section>
-
-<script>
-    function textTruncate(str, length, ending) {
-        if (length == null) {
-            length = 100;
-        }
-        if (ending == null) {
-            ending = "...";
-        }
-        if (str.length > length) {
-            return str.substring(0, length - ending.length) + ending;
-        } else {
-            return str;
-        }
-    }
-
-    const titleCardPost = document.querySelectorAll(".title_card-post");
-    titleCardPost.forEach((title) => {
-        title.textContent = textTruncate(title.textContent, 30);
-    });
-
-    const descriptionCardPost = document.querySelectorAll(
-        ".description_card-post"
-    );
-    descriptionCardPost.forEach((description) => {
-        description.textContent = textTruncate(description.textContent, 100);
-    });
-</script>

@@ -43,7 +43,7 @@ class HomeController
     {
         $user = $this->sessionService->current();
         $model = [
-            'title' => 'Devflex',
+            'title' => 'Homepage',
         ];
 
         if ($user != null) {

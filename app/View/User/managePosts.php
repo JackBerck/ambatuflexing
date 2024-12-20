@@ -58,13 +58,13 @@ function buildPaginationUrl($page)
                                     </button>
                                 </form>
                             </div>
-                            <a href="">
+                                <a href="/post/<?= $post['id'] ?>">
                                 <img
                                         src="/images/posts/<?= $post['banner'] ?>"
                                         alt="<?= $post['title'] ?> Banner Photo"
                                         class="rounded-md w-full aspect-video object-cover mb-2"
                                 />
-                            </a>
+                                </a>
                             <div class="flex gap-2 items-center mb-2">
                                 <img
                                         src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"

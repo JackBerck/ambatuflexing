@@ -50,13 +50,15 @@ function buildPaginationUrl($page)
                                 />
                             </a>
                             <div class="flex gap-2 items-center mb-2">
+                                <a href="/profile/<?= $post['authorId'] ?>">
                                 <img
                                         src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
                                         alt="<?= $post['author'] ?> Profile Photo"
                                         class="w-8 md:w-10 aspect-square rounded-full object-cover"
-                                />
+                                /></a>
                                 <div class="">
-                                    <h6 class="normal-font-size font-bold"><?= $post['author'] ?></h6>
+                                    <a href="/profile/<?= $post['authorId'] ?>">
+                                        <h6 class="normal-font-size font-bold"><?= $post['author'] ?></h6></a>
                                     <p class="small-font-size"><?= $post['authorPosition'] ?></p>
                                 </div>
                             </div>

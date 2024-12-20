@@ -1,7 +1,6 @@
 <?php
 
-$updateUser  = $model['updateUser '] ?? [];
-
+$updateUser = $model['updateUser'] ?? [];
 ?>
 
 <section
@@ -13,15 +12,15 @@ $updateUser  = $model['updateUser '] ?? [];
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
             <div class="small-font-size lg:min-w-[420px]">
                 <form
-                        action="/admin/manage-users/<?= $updateUser ["id"] ?>"
+                        action="/admin/manage-users/<?= $updateUser["id"] ?>"
                         class="small-font-size flex flex-col gap-4 mb-4 w-full"
                         enctype="multipart/form-data"
                         method="post"
                 >
                     <div class="flex items-center gap-4">
                         <img
-                                src="/images/profiles/<?= $updateUser ['photo'] ?? "default.svg" ?>"
-                                alt="Profile photo of <?= $updateUser ['username'] ?>"
+                                src="/images/profiles/<?= $updateUser['photo'] ?? "default.svg" ?>"
+                                alt="Profile photo of <?= $updateUser['username'] ?>"
                                 class="w-36 aspect-square rounded-full object-cover"
                         />
                     </div>

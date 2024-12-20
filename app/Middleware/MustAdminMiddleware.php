@@ -23,7 +23,7 @@ class MustAdminMiddleware implements Middleware
     {
         $user = $this->sessionService->current();
         if ($user->isAdmin != 'admin') {
-            View::redirect('/error');
+            View::redirect('/user/dashboard');
         }
     }
 }

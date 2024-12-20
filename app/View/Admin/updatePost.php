@@ -41,7 +41,7 @@ $images = $model['images'] ?? [];
                             type="text"
                             name="title"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
                             placeholder="Enter product name..."
                             value="<?= $post["title"] ?>"
                             required
@@ -55,7 +55,7 @@ $images = $model['images'] ?? [];
                             type="text"
                             name="category"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
                             placeholder="Enter product category..."
                             value="<?= $post["category"] ?>"
                             required
@@ -70,7 +70,7 @@ $images = $model['images'] ?? [];
                             id="description"
                             rows="4"
                             name="content"
-                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500"
+                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 text-dark-base"
                             placeholder="Write product description..."><?= $post['content'] ?></textarea>
                 </div>
             </div>

@@ -25,11 +25,11 @@ function buildPaginationUrl($page)
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg z-10">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-400">
                     <thead class="small-font-size uppercase bg-gray-700 text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">User </th>
+                        <th scope="col" class="px-6 py-3">Thumbnail </th>
                         <th scope="col" class="px-6 py-3">Title</th>
                         <th scope="col" class="px-6 py-3">Content</th>
                         <th scope="col" class="px-6 py-3">Tag</th>
@@ -45,12 +45,12 @@ function buildPaginationUrl($page)
                             ><img
                                         src="/images/posts/<?= $post['banner'] ?>"
                                         alt="<?= $post['title'] ?>"
-                                        class="w-12 rounded-full aspect-square object-cover"
+                                        class="w-16 rounded-md aspect-square object-cover"
                                 /></th
                             >
                             <td
                                     class="px-6 py-4 font-medium text-light-base whitespace-nowrap truncate-title-table"
-                            ><?= truncateText($post['title'], 30) ?>
+                            ><a href="/post/<?= $post['id'] ?>"><?= truncateText($post['title'], 30) ?></a>
                             </td
                             >
                             <td class="px-6 py-4 truncate-content-table"

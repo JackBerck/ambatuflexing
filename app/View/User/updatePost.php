@@ -24,7 +24,7 @@ $images = $model['images'] ?? [];
                             <div class="swiper-slide">
                                 <img
                                         src="/images/posts/<?= $image ?>"
-                                        alt="image of <?= $post["title"] ?>"
+                                        alt="<?= $post["title"] ?> Image"
                                         class="w-full object-cover rounded-lg aspect-video"
                                 />
                             </div>
@@ -36,28 +36,28 @@ $images = $model['images'] ?? [];
                 </div>
                 <div>
                     <label for="name" class="block mb-2 font-medium"
-                    >Judul <span class="text-red-600">*</span></label
+                    >Title <span class="text-red-600">*</span></label
                     >
                     <input
                             type="text"
                             name="title"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="Masukkan nama produk..."
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
+                            placeholder="Enter post name..."
                             value="<?= $post["title"] ?>"
                             required
                     />
                 </div>
                 <div>
                     <label for="name" class="block mb-2 font-medium"
-                    >category <span class="text-red-600">*</span></label
+                    >Category <span class="text-red-600">*</span></label
                     >
                     <input
                             type="text"
                             name="category"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="Masukkan nama produk..."
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
+                            placeholder="Enter post category..."
                             value="<?= $post["category"] ?>"
                             required
                     />
@@ -65,14 +65,14 @@ $images = $model['images'] ?? [];
                 <div class="sm:col-span-2">
                     <label
                             for="description"
-                            class="block mb-2 font-medium">Deskripsi <span class="text-red-600">*</span></label
+                            class="block mb-2 font-medium">Description <span class="text-red-600">*</span></label
                     >
                     <textarea
                             id="description"
                             rows="4"
                             name="content"
-                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500"
-                            placeholder="Tuliskan deskripsi produk..."><?= $post['content'] ?></textarea>
+                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 text-dark-base"
+                            placeholder="Write the post description..."><?= $post['content'] ?></textarea>
                 </div>
             </div>
             <button

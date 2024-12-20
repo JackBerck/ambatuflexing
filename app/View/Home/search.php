@@ -22,7 +22,7 @@ function buildPaginationUrl($page)
 
 
 <section
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base"
+        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col gap-4">
@@ -67,6 +67,9 @@ function buildPaginationUrl($page)
                 </div>
             </form>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <?php if($total <= 0): ?>
+                    <h2>No posts found</h2>
+                <?php endif; ?>
                 <?php foreach ($posts as $post): ?>
                     <div class="shadow-sm shadow-purple-base rounded-lg p-2">
                         <a href="/post/<?= $post["id"] ?>">

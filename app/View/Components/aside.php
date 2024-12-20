@@ -6,7 +6,7 @@ $user = $model['user'] ?? null;
 
 <button
         id="asideToggle"
-        class="block md:hidden p-3 bg-purple-base text-light-base font-semibold absolute top-20 left-0 rounded-r-lg transform transition-transform"
+        class="block md:hidden p-3 bg-purple-base text-light-base font-semibold fixed top-20 left-0 rounded-r-lg transform transition-transform z-50"
 >
     <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ $user = $model['user'] ?? null;
         class="fixed top-16 pt-4 md:pt-0 left-0 h-full w-64 transform -translate-x-full transition-transform md:w-1/3 lg:w-1/4 md:translate-x-0 md:static md:block pr-8 border-r border-indigo-100 z-50 bg-dark-base"
 >
     <div class="sticky flex flex-col gap-2 text-sm ">
-        <h2 class="pl-3 mb-4 text-2xl font-semibold">Pengaturan</h2>
+        <h2 class="pl-3 mb-4 text-2xl font-semibold">Settings</h2>
         <?php if ($user["isAdmin"] == 'admin'): ?>
             <a href="/admin/dashboard"
                class="flex items-center flex-shrink-0 px-3 py-2.5 font-semibold">

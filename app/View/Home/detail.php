@@ -27,9 +27,9 @@ $likeCount = $model['likeCount'] ?? 0;
             <div class="">
                 <div class="flex gap-2 items-center mb-2">
                     <a href="/profile/<?= $detail['authorId'] ?>">
-                    <img src="/images/profiles/<?= $author['photo'] ?? 'default.svg' ?>"
-                         alt="<?= $author['username'] ?> Profile Photo"
-                         class="w-8 md:w-10 aspect-square object-cover rounded-full"/></a>
+                        <img src="/images/profiles/<?= $author['photo'] ?? 'default.svg' ?>"
+                             alt="<?= $author['username'] ?> Profile Photo"
+                             class="w-8 md:w-10 aspect-square object-cover rounded-full"/></a>
                     <div class="">
                         <a href="/profile/<?= $detail['authorId'] ?>">
                             <p class="normal-font-size"><?= $author['username'] ?></p></a>
@@ -85,7 +85,10 @@ $likeCount = $model['likeCount'] ?? 0;
                           class="flex items-center gap-2">
                         <input type="hidden" name="postId" value="<?= $detail['id'] ?>">
                         <button type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 aspect-square text-red-base" fill="currentColor" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 aspect-square text-red-base"
+                                 fill="currentColor" viewBox="0 0 512 512">
+                                <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
+                            </svg>
                         </button>
                         <span class="normal-font-size"><?= $likeCount ?></span>
                     </form>
@@ -132,7 +135,7 @@ $likeCount = $model['likeCount'] ?? 0;
                             />
                             <div class="w-full">
                         <textarea
-                                class="bg-light-base focus:outline-none focus:shadow-outline border border-purple-base rounded py-2 px-4 block w-full appearance-none"
+                                class="bg-light-base focus:outline-none focus:shadow-outline border border-purple-base rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 rows="3"
                                 placeholder="Write a comment..."
                                 name="comment"></textarea>
@@ -153,9 +156,9 @@ $likeCount = $model['likeCount'] ?? 0;
                         <div class="shadow-purple-base shadow-sm p-2 rounded-sm relative">
                             <div class="flex items-center gap-2 mb-2">
                                 <a href="/profile/<?= $comment['userId'] ?>">
-                                <img src="/images/profiles/<?= $comment['photo'] ?? "default.svg" ?>"
-                                     alt="<?= $comment['username'] ?> Profile Photo"
-                                     class="w-8 md:w-10 aspect-square object-cover rounded-full"/></a>
+                                    <img src="/images/profiles/<?= $comment['photo'] ?? "default.svg" ?>"
+                                         alt="<?= $comment['username'] ?> Profile Photo"
+                                         class="w-8 md:w-10 aspect-square object-cover rounded-full"/></a>
                                 <div class="">
                                     <a href="/profile/<?= $comment['userId'] ?>">
                                         <p class="normal-font-size"><?= $comment["username"] ?></p></a>
@@ -166,7 +169,7 @@ $likeCount = $model['likeCount'] ?? 0;
                                 <p class="normal-font-size mb-1"><?= $comment["comment"] ?></p>
                                 <p class="small-font-size"><?= timeAgo($comment["createdAt"]) ?></p>
                             </div>
-                            <?php if ($currentUser['id'] == $comment["userId"]): ?>
+                            <?php if (isset($currentUser["id"]) && ($currentUser['id'] == $comment["userId"])): ?>
                                 <form action="/post/<?= $detail['id'] ?>/comment/delete" method="post"
                                       class="absolute top-0 right-0 deleteComment">
                                     <input type="hidden" name="commentId" value="<?= $comment['id'] ?>">

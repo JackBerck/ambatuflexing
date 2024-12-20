@@ -58,7 +58,7 @@ class HomeController
         $model['posts'] = $res->posts;
         $model['total'] = $res->totalPost;
 
-        View::render('home/index', $model);
+        View::render('Home/index', $model);
     }
 
     function about(): void
@@ -72,7 +72,7 @@ class HomeController
             $model['user'] = (array)$user;
         }
 
-        View::render('home/about', $model);
+        View::render('Home/about', $model);
     }
 
     function detail($postId): void
@@ -95,7 +95,7 @@ class HomeController
             $model["likeCount"] = $details->likeCount;
             $model["commentCount"] = $details->commentCount;
             $model['title'] = $details->post->title;
-            View::render('home/detail', $model);
+            View::render('Home/detail', $model);
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
             View::redirect('/');
@@ -111,7 +111,7 @@ class HomeController
         if ($user != null) {
             $model['user'] = (array)$user;
         }
-        View::render('home/upload', $model);
+        View::render('Home/upload', $model);
     }
 
     function postUpload(): void
@@ -164,7 +164,7 @@ class HomeController
         $model['total'] = $res->totalPost;
         $model['limit'] = $req->limit;
 
-        View::render('home/search', $model);
+        View::render('Home/search', $model);
     }
 
     public function error(): void

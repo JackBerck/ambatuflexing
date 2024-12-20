@@ -23,7 +23,7 @@ function buildPaginationUrl($page)
 
 <section
         id="profile"
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden"
+        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
@@ -38,28 +38,21 @@ function buildPaginationUrl($page)
                         <form method="post" action="/admin/liked-posts"
                               class="flex gap-2 items-center absolute top-2 right-2 deletePost">
                             <input type="hidden" name="postId" value="<?= $post['id'] ?>">
-                            <button type="submit" class="bg-purple-base p-2 rounded-full">
-                                <svg
-                                        class="w-5 aspect-square text-light-base"
-                                        fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 384 512"
-                                >
-                                    <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
-                                </svg>
+                            <button type="submit" class="bg-light-base p-2 rounded-full">
+                                <svg class="w-5 aspect-square text-red-base" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
                             </button>
                         </form>
                         <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
-                                    alt="<?= "image banner of" . $post["title"] ?>"
+                                    alt="<?= $post["title"] ?> Banner Photo"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
                                     src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
-                                    alt="<?= $post['author'] ?> profile"
+                                    alt="<?= $post['author'] ?> Profile Photo"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
                             <div class="">

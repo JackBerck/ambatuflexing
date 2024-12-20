@@ -19,7 +19,7 @@ $user = $model['user'] ?? [];
                     <div class="flex">
                         <img
                                 src="/images/profiles/<?= $user['photo'] ?? "default.svg" ?>"
-                                alt="Foto profil <?= $user['username'] ?>"
+                                alt="<?= $user['username'] ?> Profile Photo"
                                 class="w-36 aspect-square rounded-full object-cover"
                         />
                         <div class="flex flex-col gap-4 mt-4">
@@ -48,27 +48,27 @@ $user = $model['user'] ?? [];
                     </div>
                     <div class="">
                         <label for="username" class="block font-semibold mb-2"
-                        >Nama lengkap</label
+                        >Full Name</label
                         >
                         <input
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="text"
                                 name="username"
                                 id="username"
-                                placeholder="Masukkan nama lengkap..."
+                                placeholder="Enter full name..."
                                 value="<?= $user['username'] ?>"
                         />
                     </div>
                     <div class="">
                         <label for="email" class="block font-semibold mb-2"
-                        >Alamat Email</label
+                        >Email Address</label
                         >
                         <input
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="email"
                                 name="email"
                                 id="email"
-                                placeholder="Masukkan alamat email..."
+                                placeholder="Enter email address..."
                                 value="<?= $user['email'] ?>"
                                 readonly
                         />
@@ -82,21 +82,22 @@ $user = $model['user'] ?? [];
                                 type="text"
                                 name="position"
                                 id="position"
-                                value="<?= $user['position'] ?? "Malas ngoding mending scroll fesnuk" ?>"
+                                placeholder="Enter position..."
+                                value="<?= $user['position'] ?? "" ?>"
                         />
                     </div>
                     <div class="">
                         <label for="bio" class="block font-semibold mb-2">
                             Bio
                         </label>
-                        <textarea name="bio" id="bio" cols="30" rows="4"
-                                  class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"><?= $user['bio'] ?? "belum ada isinya nih" ?></textarea>
+                        <textarea name="bio" id="bio" cols="30" rows="4" placeholder="Enter bio..."
+                                  class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"><?= $user['bio'] ?? "" ?></textarea>
                     </div>
                     <div class="">
                         <button
                                 type="submit"
                                 class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700"
-                        >Perbarui Akun
+                        >Update Account
                         </button
                         >
                     </div>
@@ -116,7 +117,7 @@ $user = $model['user'] ?? [];
                                     type="password"
                                     name="oldPassword"
                                     id="password"
-                                    placeholder="Masukkan password..."
+                                    placeholder="Enter old password..."
                             />
                             <button
                                     type="button"
@@ -139,7 +140,7 @@ $user = $model['user'] ?? [];
                     </div>
                     <div class="">
                         <label for="new-password" class="block font-semibold mb-2"
-                        >Password Baru</label
+                        >New Password</label
                         >
                         <div class="relative">
                             <input
@@ -147,7 +148,7 @@ $user = $model['user'] ?? [];
                                     type="password"
                                     name="newPassword"
                                     id="new-password"
-                                    placeholder="Masukkan password terbaru..."
+                                    placeholder="Enter new password..."
                             />
                             <button
                                     type="button"
@@ -171,7 +172,7 @@ $user = $model['user'] ?? [];
                     <div class="">
                         <label
                                 for="verification-new-password"
-                                class="block font-semibold mb-2">Verifikasi Password Baru</label
+                                class="block font-semibold mb-2">Verify New Password</label
                         >
                         <div class="relative">
                             <input
@@ -179,7 +180,7 @@ $user = $model['user'] ?? [];
                                     type="password"
                                     name="verification-new-password"
                                     id="verification-new-password"
-                                    placeholder="Masukkan ulang password terbaru..."
+                                    placeholder="Re-enter new password..."
                             />
                             <button
                                     type="button"
@@ -204,7 +205,7 @@ $user = $model['user'] ?? [];
                         <button
                                 type="submit"
                                 class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700"
-                        >Perbarui Password
+                        >Update Password
                         </button
                         >
                     </div>

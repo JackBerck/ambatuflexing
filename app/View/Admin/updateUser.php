@@ -1,6 +1,6 @@
 <?php
 
-$updateUser = $model['updateUser'] ?? [];
+$updateUser  = $model['updateUser '] ?? [];
 
 ?>
 
@@ -13,45 +13,45 @@ $updateUser = $model['updateUser'] ?? [];
             <?php include_once __DIR__ . "/../Components/aside.php"; ?>
             <div class="small-font-size lg:min-w-[420px]">
                 <form
-                        action="/admin/manage-users/<?= $updateUser["id"] ?>"
+                        action="/admin/manage-users/<?= $updateUser ["id"] ?>"
                         class="small-font-size flex flex-col gap-4 mb-4 w-full"
                         enctype="multipart/form-data"
                         method="post"
                 >
                     <div class="flex items-center gap-4">
                         <img
-                                src="/images/profiles/<?= $updateUser['photo'] ?? "default.svg" ?>"
-                                alt="Foto profil <?= $updateUser['username'] ?>"
+                                src="/images/profiles/<?= $updateUser ['photo'] ?? "default.svg" ?>"
+                                alt="Profile photo of <?= $updateUser ['username'] ?>"
                                 class="w-36 aspect-square rounded-full object-cover"
                         />
                     </div>
                     <div class="">
-                        <h3><?= $updateUser["username"] ?></h3>
+                        <h3><?= $updateUser ["username"] ?></h3>
                     </div>
                     <div class="">
                         <label for="email" class="block font-semibold mb-2"
-                        >Alamat Email</label
+                        >Email Address</label
                         >
                         <input
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="email"
                                 name="email"
                                 id="email"
-                                placeholder="Masukkan alamat email..."
-                                value="<?= $updateUser['email'] ?>"
+                                placeholder="Enter email address..."
+                                value="<?= $updateUser ['email'] ?>"
                         />
                     </div>
                     <div class="">
                         <button
                                 type="submit"
                                 class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700"
-                        >Perbarui Email
+                        >Update Email
                         </button
                         >
                     </div>
                 </form>
                 <form
-                        action="/admin/manage-users/<?= $updateUser["id"] ?>/password"
+                        action="/admin/manage-users/<?= $updateUser ["id"] ?>/password"
                         class="flex flex-col gap-4 mb-4 w-full"
                         method="post"
                 >
@@ -65,7 +65,7 @@ $updateUser = $model['updateUser'] ?? [];
                                     type="password"
                                     name="newPassword"
                                     id="password"
-                                    placeholder="Masukkan password..."
+                                    placeholder="Enter password..."
                             />
                             <button
                                     type="button"
@@ -90,7 +90,7 @@ $updateUser = $model['updateUser'] ?? [];
                         <button
                                 type="submit"
                                 class="bg-purple-base text-white font-bold py-2 px-4 w-full rounded hover:bg-purple-700"
-                        >Perbarui Password
+                        >Update Password
                         </button
                         >
                     </div>
@@ -102,36 +102,11 @@ $updateUser = $model['updateUser'] ?? [];
 
 <script>
     const togglePassword = document.getElementById("togglePassword");
-    const toggleNewPassword = document.getElementById("toggleNewPassword");
-    const toggleVerifyNewPassword = document.getElementById(
-        "toggleVerifyNewPassword"
-    );
     const passwordInput = document.getElementById("password");
-    const newPasswordInput = document.getElementById("new-password");
-    const verifyNewPasswordInput = document.getElementById(
-        "verification-new-password"
-    );
-    const eyeIcon = document.getElementById("eyeIcon");
 
     togglePassword.addEventListener("click", function () {
         const type =
             passwordInput.getAttribute("type") === "password" ? "text" : "password";
         passwordInput.setAttribute("type", type);
-    });
-
-    toggleNewPassword.addEventListener("click", function () {
-        const type =
-            newPasswordInput.getAttribute("type") === "password"
-                ? "text"
-                : "password";
-        newPasswordInput.setAttribute("type", type);
-    });
-
-    toggleVerifyNewPassword.addEventListener("click", function () {
-        const type =
-            verifyNewPasswordInput.getAttribute("type") === "password"
-                ? "text"
-                : "password";
-        verifyNewPasswordInput.setAttribute("type", type);
     });
 </script>

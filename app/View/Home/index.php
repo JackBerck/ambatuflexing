@@ -75,7 +75,7 @@ $user = $model['user'] ?? null;
                         <div class="flex gap-2 items-center mb-2">
                             <a href="/profile/<?= $post['authorId'] ?>">
                             <img
-                                    src="/images/profiles/<?= $post['authorPhoto'] ?>"
+                                    src="/images/profiles/<?= $post['authorPhoto'] ?? 'default.svg' ?>"
                                     alt="<?= $post['author'] ?> Profile Photo"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />

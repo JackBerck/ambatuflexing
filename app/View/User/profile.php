@@ -25,14 +25,14 @@ function buildPaginationUrl($page)
 
 <section
         id="user"
-        class="section-padding-x pt-28 pb-24 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-gray-800 normal-font-size"
+        class="section-padding-x pt-28 pb-24 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-gray-800 normal-font-size min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-8">
             <div class="w-full md:w-1/3 lg:w-1/4 flex gap-4 md:block">
                 <img
-                        src="/images/profiles/<?= $user["photo"] ?>"
-                        alt="Foto <?= $user["username"] ?>"
+                        src="/images/profiles/<?= $user["photo"] ?? 'default.svg' ?>"
+                        alt="<?= $user["username"] ?> Photo Profile"
                         class="w-[128px] md:w-[448px] lg:w-[512px] mx-auto rounded-full object-cover aspect-square mb-4"
                 />
                 <div class="">
@@ -62,11 +62,18 @@ function buildPaginationUrl($page)
                     </a>
                 </div>
             </div>
+            <?php if(count($posts) === 0): ?>
+                <div class="w-full md:w-2/3 lg:w-3/4">
+                    <div class="flex justify-center items-center h-full">
+                        <p class="text-center">There's no posts yet</p>
+                    </div>
+                </div>
+            <?php else: ?>
             <div
                     class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 w-full md:w-2/3 lg:w-3/4"
             >
                 <?php foreach ($posts as $post): ?>
-                    <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative">
+                    <div class="shadow-sm shadow-purple-base rounded-lg p-2 relative max-h-fit" >
                         <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post["banner"] ?>"
@@ -123,6 +130,7 @@ function buildPaginationUrl($page)
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>

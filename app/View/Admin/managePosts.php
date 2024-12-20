@@ -20,7 +20,7 @@ function buildPaginationUrl($page)
 ?>
 <section
         id="home"
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base"
+        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
@@ -29,7 +29,7 @@ function buildPaginationUrl($page)
                 <table class="w-full text-sm text-left rtl:text-right text-gray-400">
                     <thead class="small-font-size uppercase bg-gray-700 text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">User</th>
+                        <th scope="col" class="px-6 py-3">User </th>
                         <th scope="col" class="px-6 py-3">Title</th>
                         <th scope="col" class="px-6 py-3">Content</th>
                         <th scope="col" class="px-6 py-3">Tag</th>
@@ -74,34 +74,30 @@ function buildPaginationUrl($page)
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-                <!-- Tambahkan pagination di sini -->
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <?php if ($currentPage > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationUrl($currentPage - 1) ?>"
-                                   aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
-                                <a class="page-link" href="<?= buildPaginationUrl($i) ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-
-                        <?php if ($currentPage < $totalPages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="<?= buildPaginationUrl($currentPage + 1) ?>"
-                                   aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
+                <!-- Add pagination here -->
+                <div class="flex justify-center items-center gap-2 my-4">
+                    <?php if ($currentPage > 1): ?>
+                        <a
+                                href="<?= buildPaginationUrl($currentPage - 1) ?>"
+                                class="font-medium text-blue-base hover:underline"
+                        >Previous</a
+                        >
+                    <?php endif; ?>
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a
+                                href="<?= buildPaginationUrl($i) ?>"
+                                class="font-medium <?= $i === $currentPage ? 'text-blue-base' : 'text-blue-base' ?> hover:underline"
+                        ><?= $i ?></a
+                        >
+                    <?php endfor; ?>
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a
+                                href="<?= buildPaginationUrl($currentPage + 1) ?>"
+                                class="font-medium text-blue-base hover:underline"
+                        >Next</a
+                        >
+                    <?php endif; ?>
+                </div>
                 <!-- Pagination ends here -->
             </div>
         </div>

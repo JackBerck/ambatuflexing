@@ -22,22 +22,22 @@ function timeAgo($datetime, $full = false)
 
     // Menentukan unit waktu
     $units = [
-        'tahun' => $diff->y,
-        'bulan' => $diff->m,
-        'minggu' => floor($diff->d / 7),
-        'hari' => $diff->d,
-        'jam' => $diff->h,
-        'menit' => $diff->i,
-        'detik' => $diff->s,
+        'years' => $diff->y,
+        'months' => $diff->m,
+        'weeks' => floor($diff->d / 7),
+        'days' => $diff->d,
+        'hours' => $diff->h,
+        'minutes' => $diff->i,
+        'seconds' => $diff->s,
     ];
 
     // Mencari unit waktu yang pertama kali tidak nol
     foreach ($units as $unit => $value) {
         if ($value > 0) {
-            $timeString = $value . ' ' . $unit . ($value > 1 ? ' yang lalu' : ' yang lalu');
+            $timeString = $value . ' ' . $unit . ($value > 1 ? ' ago' : ' ago');
             return $timeString;
         }
     }
 
-    return 'baru saja'; // Jika tidak ada perbedaan waktu
+    return 'recently'; // Jika tidak ada perbedaan waktu
 }

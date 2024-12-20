@@ -90,7 +90,7 @@ $user = $model['user'] ?? [];
                         <label for="bio" class="block font-semibold mb-2">
                             Bio
                         </label>
-                        <textarea name="bio" id="bio" cols="30" rows="4" placeholder="About me..."
+                        <textarea name="bio" id="bio" cols="30" rows="4" placeholder="Enter bio..."
                                   class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"><?= $user['bio'] ?? "" ?></textarea>
                     </div>
                     <div class="">
@@ -117,7 +117,7 @@ $user = $model['user'] ?? [];
                                     type="password"
                                     name="oldPassword"
                                     id="password"
-                                    placeholder="Enter password..."
+                                    placeholder="Enter old password..."
                             />
                             <button
                                     type="button"

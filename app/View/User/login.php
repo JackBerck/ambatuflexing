@@ -31,7 +31,6 @@
                     <div class="">
                         <div class="flex justify-between">
                             <label class="block font-semibold mb-2" for="password">Password</label>
-                            <a href="#" class="text-xs">Forget Password?</a>
                         </div>
                         <input
                                 id="password"

@@ -26,11 +26,13 @@ $likeCount = $model['likeCount'] ?? 0;
             <!-- Content Start -->
             <div class="">
                 <div class="flex gap-2 items-center mb-2">
+                    <a href="/profile/<?= $detail['authorId'] ?>">
                     <img src="/images/profiles/<?= $author['photo'] ?? 'default.svg' ?>"
                          alt="<?= $author['username'] ?> Profile Photo"
-                         class="w-8 md:w-10 aspect-square object-cover rounded-full"/>
+                         class="w-8 md:w-10 aspect-square object-cover rounded-full"/></a>
                     <div class="">
-                        <p class="normal-font-size"><?= $author['username'] ?></p>
+                        <a href="/profile/<?= $detail['authorId'] ?>">
+                            <p class="normal-font-size"><?= $author['username'] ?></p></a>
                         <p class="small-font-size"><?= $author['position'] ?></p>
                     </div>
                 </div>

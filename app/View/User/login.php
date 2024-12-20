@@ -12,10 +12,10 @@
             </div>
             <div class="w-full p-8 lg:w-1/2">
                 <h2 class="title-font-size font-bold mb-2 md:text-center">
-                    AmbatuFlex
+                    DevFlex
                 </h2>
                 <p class="normal-font-size mb-4 md:text-center">
-                    Selamat datang kembali!
+                    Welcome back!
                 </p>
                 <form action="/login" method="post" class="small-font-size flex flex-col gap-4 mb-4">
                     <div class="">
@@ -24,7 +24,7 @@
                                 id="email"
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="email"
-                                placeholder="Masukkan alamat email..."
+                                placeholder="Enter your email address..."
                                 name="email"
                         />
                     </div>
@@ -37,7 +37,7 @@
                                 id="password"
                                 class="bg-gray-200 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none text-dark-base"
                                 type="password"
-                                placeholder="Masukkan password..."
+                                placeholder="Enter your password..."
                                 name="password"
                         />
                     </div>
@@ -45,17 +45,17 @@
                         <button
                                 type="submit"
                                 class="bg-purple-base text-light-base font-bold py-2 px-4 w-full rounded hover:bg-purple-800"
-                        >Masuk
+                        >Login
                         </button
                         >
                     </div>
                 </form>
                 <p class="small-font-size text-center">
-                    Atau belum punya akun?
+                    Don't have an account?
                     <a
                             href="/register"
                             class="inline-block py-1 px-2 bg-purple-base text-light-base rounded-md"
-                    >Daftar sekarang</a
+                    >Register now</a
                     >
                 </p>
             </div>

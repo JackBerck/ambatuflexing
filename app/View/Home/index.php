@@ -3,6 +3,7 @@
 $posts = $model['posts'] ?? [];
 $total = $model['total'] ?? 0;
 $limit = $model['limit'] ?? 0;
+$user = $model['user'] ?? null;
 
 ?>
 
@@ -14,11 +15,10 @@ $limit = $model['limit'] ?? 0;
         <div class="flex flex-col gap-4">
             <div class="">
                 <h1 class="title-font-size font-bold mb-2 md:text-center">
-                    Selamat datang di AmbatuFlex
+                    Welcome to DevFlex
                 </h1>
-                <p class="normal-font-size mb-4 md:text-center">
-                    Platform pembelajaran online yang menyediakan berbagai kursus
-                    berkualitas
+                <p class="normal-font-size mb-4 md:text-center max-w-2xl mx-auto">
+                    An online platform to flex your development projects and learn from others. Share your projects, get feedback, and learn from others.
                 </p>
             </div>
             <form class="max-w-xl small-font-size" method="get" action="/search">
@@ -51,7 +51,7 @@ $limit = $model['limit'] ?? 0;
                             id="default-search"
                             name="title"
                             class="block w-full p-4 ps-10 text-light-base border bg-gray-700 border-gray-600 placeholder-gray-400 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Cari kursus yang kamu inginkan..."
+                            placeholder="Search for the projects you want..."
                             required
                     />
                     <button
@@ -68,18 +68,22 @@ $limit = $model['limit'] ?? 0;
                         <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
-                                    alt="Banner card <?= $post['title'] ?>"
+                                    alt="Card banner <?= $post['title'] ?>"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
+                            <a href="/profile/<?= $post['authorId'] ?>">
                             <img
                                     src="/images/profiles/<?= $post['authorPhoto'] ?>"
-                                    alt="<?= $post['author'] ?> Photo Profile"
+                                    alt="<?= $post['author'] ?> Profile Photo"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
+                            </a>
                             <div class="">
+                                <a href="/profile/<?= $post['authorId'] ?>">
                                 <h6 class="normal-font-size font-bold"><?= $post['author'] ?></h6>
+                                </a>
                                 <p class="small-font-size"><?= $post['authorPosition'] ?></p>
                             </div>
                         </div>
@@ -124,3 +128,11 @@ $limit = $model['limit'] ?? 0;
         </div>
     </div>
 </section>
+
+<?php if($user): ?>
+<div class="fixed right-8 bottom-6 md:right-10 md:bottom-8 bg-purple-base p-4 rounded-full">
+    <a href="/upload">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 md:w-8 lg:w-12 text-light-base aspect-square" fill="currentColor" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+    </a>
+</div>
+<?php endif; ?>

@@ -3,10 +3,10 @@ $user = $model["user"] ?? null;
 ?>
 <nav class="shadow-purple-base shadow-md bg-dark-base fixed top-0 w-full z-[999]">
     <div class="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4 xl:px-0 md:py-4">
-        <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
             <img src="/images/favicon.png" class="h-8" alt="AmbatuFlex Logo"/>
             <span class="self-center text-2xl font-semibold whitespace-nowrap text-light-base">
-                AmbatuFlex
+                DevFlex
             </span>
         </a>
         <button
@@ -36,24 +36,24 @@ $user = $model["user"] ?? null;
             <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border rounded-lg md:flex-row md:space-x-2 rtl:space-x-reverse md:mt-0 md:border-0 bg-gray-800 md:bg-dark-base border-gray-700 gap-2 lg:gap-0">
                 <li>
                     <a href="/" class="block py-2 px-3 rounded text-light-base " aria-current="page">
-                        Beranda
+                        Home
                     </a>
                 </li>
                 <li>
                     <a href="/about" class="block py-2 px-3 rounded text-light-base " aria-current="page">
-                        Tentang Kami
+                        About Us
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="/upload" class="block py-2 px-3 rounded text-light-base " aria-current="page">
                         Upload
                     </a>
-                </li>
-                <li>
+                </li> -->
+                <!--<li>
                     <a href="/search" class="block py-2 px-3 rounded text-light-base " aria-current="page">
                         Search
                     </a>
-                </li>
+                </li>-->
                 <?php
                 if (!$user):?>
                     <li>

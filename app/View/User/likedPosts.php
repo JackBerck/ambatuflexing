@@ -3,27 +3,27 @@
 $posts = $model["posts"] ?? [];
 $total = $model["total"] ?? 0;
 
-$perPage = $model["limit"] ?? 50; // Jumlah resep per halaman
-$totalPages = ceil($total / $perPage); // Hitung total halaman
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Ambil halaman saat ini
-$currentPage = max(1, min($totalPages, $currentPage)); // Validasi halaman saat ini
+$perPage = $model["limit"] ?? 50; // Number of posts per page
+$totalPages = ceil($total / $perPage); // Calculate total pages
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get the current page
+$currentPage = max(1, min($totalPages, $currentPage)); // Validate the current page
 
 // Function to build pagination URL
 function buildPaginationUrl($page)
 {
     $parsedUrl = parse_url($_SERVER["REQUEST_URI"]);
     parse_str($parsedUrl['query'] ?? '', $queryParams);
-    unset($queryParams['page']); // Hapus parameter 'page' jika ada
-    $queryParams['page'] = $page; // Tambahkan parameter 'page' baru
-    $newQuery = http_build_query($queryParams); // Bangun kembali query string
-    return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : ''); // Gabungkan kembali
+    unset($queryParams['page']); // Remove 'page' parameter if it exists
+    $queryParams['page'] = $page; // Add the new 'page' parameter
+    $newQuery = http_build_query($queryParams); // Rebuild the query string
+    return $parsedUrl['path'] . ($newQuery ? '?' . $newQuery : ''); // Combine it back
 }
 
 ?>
 
 <section
         id="profile"
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden"
+        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
@@ -52,14 +52,14 @@ function buildPaginationUrl($page)
                         <a href="/post/<?= $post['id'] ?>">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
-                                    alt="<?= "image banner of" . $post["title"] ?>"
+                                    alt="<?= $post["title"] ?> Banner Photo"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
                                     src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
-                                    alt="<?= $post['author'] ?> profile"
+                                    alt="<?= $post['author'] ?> Profile Photo"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
                             <div class="">
@@ -86,7 +86,7 @@ function buildPaginationUrl($page)
                                         class="w-4 aspect-square text-light-base"
                                         fill="currentColor"
                                 >
-                                    <path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8l0-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5l0 3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9zM239.1 145c-.4-.3-.7-.7-1-1.1l-17.8-20-.1-.1s0 0 0 0c-23.1-25.9-58-37.7-92-31.2C81.6 101.5 48 142.1 48 189.5l0 3.3c0 28.5 11.9 55.8 32.8 75.2L256 430.7 431.2 268c20.9-19.4 32.8-46.7 32.8-75.2l0-3.3c0-47.3-33.6-88-80.1-96.9c-34-6.5-69 5.4-92 31.2c0 0 0 0-.1 .1s0 0-.1 .1l-17.8 20c-.3 .4-.7 .7-1 1.1c-4.5 4.5-10.6 7-16.9 7s-12.4-2.5-16.9-7z"/>
+                                    <path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8l0-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5l0 3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9z"/>
                                 </svg>
                                 <span class="normal-font-size"><?= $post['likeCount'] ?></span>
                             </button>

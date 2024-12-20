@@ -21,7 +21,7 @@ function buildPaginationUrl($page)
 
 <section
         id="profile"
-        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden"
+        class="section-padding-x pt-24 pb-12 lg:pt-36 lg:pb-16 normal-font-size text-light-base bg-dark-base relative md:static overflow-hidden min-h-[480px] md:min-h-[540px] xl:min-h-[640px]"
 >
     <div class="container max-w-screen-sm lg:max-w-screen-lg">
         <div class="flex flex-col md:flex-row gap-8">
@@ -60,14 +60,14 @@ function buildPaginationUrl($page)
                         <a href="">
                             <img
                                     src="/images/posts/<?= $post['banner'] ?>"
-                                    alt="<?= $post['title'] ?>"
+                                    alt="<?= $post['title'] ?> Banner Photo"
                                     class="rounded-md w-full aspect-video object-cover mb-2"
                             />
                         </a>
                         <div class="flex gap-2 items-center mb-2">
                             <img
                                     src="/images/profiles/<?= $post['authorPhoto'] ?? "default.svg" ?>"
-                                    alt="<?= $post['author'] ?>photo profile"
+                                    alt="<?= $post['author'] ?> Photo Profile"
                                     class="w-8 md:w-10 aspect-square rounded-full object-cover"
                             />
                             <div class="">

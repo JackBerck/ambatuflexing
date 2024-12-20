@@ -3,46 +3,46 @@
         class="section-padding-x pt-24 pb-8 normal-font-size text-light-base bg-dark-base"
 >
     <div class="max-w-screen-lg container">
-        <h1 class="font-bold title-font-size mb-4">Buat Postingan</h1>
+        <h1 class="font-bold title-font-size mb-4">Create a Post</h1>
         <form action="/upload" method="post" enctype="multipart/form-data">
             <div class="flex flex-col gap-4 mb-4">
                 <div>
                     <label for="name" class="block mb-2 font-medium"
-                    >Judul <span class="text-red-600">*</span></label
+                    >Title <span class="text-red-600">*</span></label
                     >
                     <input
                             type="text"
                             name="title"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="Masukkan nama produk..."
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
+                            placeholder="Enter post name..."
                             required=""
                     />
                 </div>
                 <div>
                     <label for="name" class="block mb-2 font-medium"
-                    >Kategroi <span class="text-red-600">*</span></label
+                    >Category <span class="text-red-600">*</span></label
                     >
                     <input
                             type="text"
                             name="category"
                             id="name"
-                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="Masukkan nama produk..."
+                            class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-dark-base"
+                            placeholder="Enter post category..."
                             required=""
                     />
                 </div>
                 <div class="sm:col-span-2">
                     <label
                             for="description"
-                            class="block mb-2 font-medium">Deskripsi <span class="text-red-600">*</span></label
+                            class="block mb-2 font-medium">Description <span class="text-red-600">*</span></label
                     >
                     <textarea
                             id="description"
                             rows="4"
                             name="content"
-                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500"
-                            placeholder="Tuliskan deskripsi produk..."></textarea>
+                            class="block p-2.5 w-full bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 text-dark-base"
+                            placeholder="Write the post description..."></textarea>
                 </div>
                 <div class="flex items-center justify-center w-full sm:col-span-2">
                     <label
@@ -70,7 +70,7 @@
                                 drop <span class="text-red-600">*</span>
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">
-                                SVG, PNG, JPG or GIF (MAX. 800x400px)
+                                SVG, PNG, JPG, or GIF (MAX. 800x400px)
                             </p>
                         </div>
                         <input id="dropzone-file" type="file" name="images[]" class="hidden" multiple/>
@@ -93,7 +93,7 @@
                             clip-rule="evenodd"></path>
                 </svg
                 >
-                Tambahkan Postingan
+                Add Post
             </button>
         </form>
     </div>

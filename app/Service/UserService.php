@@ -39,7 +39,7 @@ class UserService
             Database::beginTransaction();
             $user = $this->userRepository->findByField('email', $request->email);
             if ($user != null) {
-                throw new ValidationException("User Id already exists");
+                throw new ValidationException("User email already exists");
             }
 
             $user = new User();

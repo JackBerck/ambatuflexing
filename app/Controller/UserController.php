@@ -68,10 +68,11 @@ class UserController
 
         try {
             $this->userService->register($request);
-            Flasher::set("Success", "Register Success");
+            // Flasher::set("Success", "Register Success");
             View::redirect('/login');
         } catch (ValidationException $exception) {
-            Flasher::set("Error", $exception->getMessage(), "error");
+            // Flasher::set("Error", $exception->getMessage(), "error");
+            $_SESSION["message"] = [ "type" => "error", "text" => $exception->getMessage()];
             View::redirect('/register');
         }
     }
@@ -94,6 +95,7 @@ class UserController
             View::redirect('/');
         } catch (ValidationException $exception) {
             Flasher::set("Error", $exception->getMessage(), "error");
+            $_SESSION["message"] = [ "type" => "error", "text" => "Error, cannot register. Please try again!"];
             View::redirect('/login');
         }
     }

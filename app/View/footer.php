@@ -13,7 +13,7 @@
             <li>
                 <a href="/about"
                    class="leading-6 text-light-base hover:text-purple-base ">
-                    Tentang Kami
+                    About Us
                 </a>
             </li>
         </ul>
